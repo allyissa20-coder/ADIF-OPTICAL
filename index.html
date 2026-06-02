@@ -1,0 +1,1722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ADIF Optical — Practice Management</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--n:#0a1628;--n2:#122039;--n3:#1a2d4d;--n4:#243a5e;--g:#c9a84c;--g2:#e0bc68;--w:#f6f4ef;--o:#ddd8ce;--m:#6b7e96;--bd:rgba(201,168,76,.22);--bd2:rgba(255,255,255,.06);--gr:#27ae60;--or:#e67e22;--rd:#c0392b;--bl:#2980b9}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Jost',sans-serif;background:var(--n);color:var(--w);min-height:100vh}
+a{color:var(--g)}
+.ov{position:fixed;inset:0;z-index:500;display:none;align-items:center;justify-content:center;padding:20px;background:linear-gradient(135deg,#0a1628 0%,#061018 100%);overflow-y:auto}
+.ov.show{display:flex}
+.ovb{background:var(--n2);border:1px solid var(--bd);border-radius:12px;padding:32px;max-height:92vh;overflow-y:auto;box-shadow:0 30px 80px rgba(0,0,0,.5);width:100%}
+.ovb.sm{max-width:440px}
+.ovb.md{max-width:600px}
+.lg-h{text-align:center;margin-bottom:22px}
+.lg-h h1{font-family:'Cormorant Garamond',serif;font-size:2.1rem;color:var(--g);font-weight:600}
+.lg-h p{color:var(--m);font-size:.74rem;letter-spacing:.12em;text-transform:uppercase;margin-top:4px}
+.tabs{display:flex;border-bottom:1px solid var(--bd);margin-bottom:18px}
+.tabs button{flex:1;background:none;border:none;border-bottom:3px solid transparent;color:var(--m);font:500 .76rem 'Jost',sans-serif;letter-spacing:.07em;text-transform:uppercase;padding:10px;cursor:pointer;margin-bottom:-1px}
+.tabs button.act{color:var(--g);border-bottom-color:var(--g)}
+.fg{display:flex;flex-direction:column;gap:5px;margin-bottom:11px}
+.fg label{font:500 .65rem 'Jost',sans-serif;color:var(--m);text-transform:uppercase;letter-spacing:.08em}
+.fg input,.fg select,.fg textarea{background:var(--n3);border:1px solid rgba(201,168,76,.18);border-radius:5px;padding:8px 11px;color:var(--w);font:.81rem 'Jost',sans-serif;outline:none;width:100%;transition:border .2s}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--g)}
+.fg textarea{resize:vertical;min-height:56px}
+.fg select option{background:var(--n2)}
+.r2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.r3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.r4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:9px}
+.er{color:#e87060;font-size:.72rem;margin-bottom:8px;min-height:14px}
+.btn{padding:9px 22px;border-radius:5px;font:500 .76rem 'Jost',sans-serif;letter-spacing:.05em;cursor:pointer;border:1px solid;transition:all .2s;display:inline-flex;align-items:center;gap:6px}
+.btn-p{background:var(--g);color:var(--n);border-color:var(--g)}
+.btn-p:hover{background:var(--g2)}
+.btn-s{background:transparent;color:var(--m);border-color:rgba(255,255,255,.15)}
+.btn-s:hover{color:var(--w);border-color:rgba(255,255,255,.4)}
+.btn-bk{width:100%;justify-content:center}
+.btn-sm{padding:6px 14px;font-size:.7rem}
+.ab{background:none;border:none;cursor:pointer;padding:3px 7px;border-radius:4px;font-size:.7rem;margin-right:2px}
+.ab.e{color:var(--g)}.ab.e:hover{background:rgba(201,168,76,.15)}
+.ab.d{color:#e87060}.ab.d:hover{background:rgba(192,57,43,.15)}
+.ab.vw{color:#64b5f6}.ab.vw:hover{background:rgba(41,128,185,.15)}
+.fac{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+header{background:var(--n2);border-bottom:1px solid var(--bd);display:flex;align-items:stretch;position:sticky;top:0;z-index:100;box-shadow:0 2px 20px rgba(0,0,0,.4)}
+.lg{font:600 1.3rem 'Cormorant Garamond',serif;color:var(--g);padding:0 22px;border-right:1px solid var(--bd);display:flex;align-items:center;white-space:nowrap}
+.lg span{color:var(--w);font-weight:400}
+nav{display:flex;overflow-x:auto;flex:1}
+nav button{background:none;border:none;border-bottom:3px solid transparent;color:var(--m);font:500 .7rem 'Jost',sans-serif;letter-spacing:.06em;text-transform:uppercase;padding:0 13px;cursor:pointer;white-space:nowrap;min-height:54px;transition:all .2s}
+nav button:hover{color:var(--w)}
+nav button.act{color:var(--g);border-bottom-color:var(--g)}
+.ua{display:flex;align-items:center;gap:10px;padding:0 14px;border-left:1px solid var(--bd)}
+.ub{font-size:.72rem;text-align:right}
+.ub .un{color:var(--w);font-weight:500}
+.ub .ur{color:var(--g);text-transform:uppercase;letter-spacing:.06em;font-size:.6rem}
+main{padding:24px 28px}
+.pg{display:none}
+.pg.act{display:block}
+.ph{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px}
+.pt{font:600 1.85rem 'Cormorant Garamond',serif;line-height:1}
+.pt small{display:block;font:400 .64rem 'Jost',sans-serif;color:var(--m);letter-spacing:.12em;text-transform:uppercase;margin-bottom:4px}
+.c{background:var(--n2);border:1px solid var(--bd);border-radius:8px;overflow:hidden;margin-bottom:16px}
+.ch{padding:12px 18px;background:rgba(0,0,0,.18);border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between}
+.ct{font:600 1.05rem 'Cormorant Garamond',serif;color:var(--g2)}
+.cb{padding:18px}
+.st{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:18px}
+.sx{background:var(--n2);border:1px solid var(--bd);border-radius:8px;padding:14px 16px}
+.sl{font-size:.6rem;color:var(--m);text-transform:uppercase;letter-spacing:.1em;margin-bottom:5px;font-weight:500}
+.sv{font:600 1.75rem 'Cormorant Garamond',serif;color:var(--g);line-height:1}
+.ss{font-size:.65rem;color:var(--m);margin-top:3px}
+.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:.78rem}
+thead th{background:rgba(0,0,0,.22);color:var(--g);font-weight:500;letter-spacing:.06em;text-transform:uppercase;font-size:.64rem;padding:9px 12px;text-align:left;border-bottom:1px solid var(--bd);white-space:nowrap}
+tbody tr{border-bottom:1px solid rgba(255,255,255,.04);transition:background .15s}
+tbody tr:hover{background:rgba(201,168,76,.04)}
+td{padding:8px 12px;color:var(--o);vertical-align:middle}
+.bd{display:inline-block;padding:2px 8px;border-radius:20px;font-size:.6rem;font-weight:600;letter-spacing:.04em}
+.b-ok{background:rgba(39,174,96,.15);color:#5dde8a;border:1px solid rgba(39,174,96,.3)}
+.b-w{background:rgba(230,126,34,.15);color:#f0a456;border:1px solid rgba(230,126,34,.3)}
+.b-d{background:rgba(192,57,43,.15);color:#e87060;border:1px solid rgba(192,57,43,.3)}
+.b-i{background:rgba(41,128,185,.15);color:#64b5f6;border:1px solid rgba(41,128,185,.3)}
+.b-g{background:rgba(201,168,76,.15);color:var(--g2);border:1px solid var(--bd)}
+.b-a{background:rgba(142,68,173,.18);color:#c39bd3;border:1px solid rgba(142,68,173,.35)}
+.b-doc{background:rgba(41,128,185,.18);color:#74b9ff;border:1px solid rgba(41,128,185,.4)}
+.b-r{background:rgba(39,174,96,.18);color:#7fdda0;border:1px solid rgba(39,174,96,.4)}
+.sb{display:flex;gap:9px;margin-bottom:14px;flex-wrap:wrap}
+.sb input,.sb select{background:var(--n2);border:1px solid var(--bd);border-radius:5px;padding:7px 11px;color:var(--o);font:.78rem 'Jost',sans-serif;outline:none}
+.sb input{flex:1;min-width:170px}
+.sb input:focus,.sb select:focus{border-color:var(--g)}
+.mo{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(4px);z-index:300;align-items:flex-start;justify-content:center;padding:24px;overflow-y:auto}
+.mo.show{display:flex}
+.mb{background:var(--n2);border:1px solid var(--bd);border-radius:10px;width:720px;max-width:100%;max-height:calc(100vh - 48px);overflow-y:auto;margin:auto;box-shadow:0 24px 70px rgba(0,0,0,.5)}
+.mb.sm{width:480px}
+.mb.lg{width:920px}
+.mh{padding:14px 20px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--n2);z-index:1}
+.mt{font:600 1.18rem 'Cormorant Garamond',serif;color:var(--g2)}
+.mc{background:none;border:none;color:var(--m);font-size:1.4rem;cursor:pointer;line-height:1}
+.mc:hover{color:var(--w)}
+.mby{padding:18px 20px}
+.mf{padding:12px 20px;border-top:1px solid var(--bd);display:flex;justify-content:flex-end;gap:9px;position:sticky;bottom:0;background:var(--n2)}
+.etb{display:flex;border-bottom:1px solid var(--bd);margin-bottom:16px;overflow-x:auto}
+.etb button{background:none;border:none;border-bottom:3px solid transparent;color:var(--m);font:500 .68rem 'Jost',sans-serif;letter-spacing:.06em;text-transform:uppercase;padding:8px 12px;cursor:pointer;margin-bottom:-1px;white-space:nowrap}
+.etb button.act{color:var(--g);border-bottom-color:var(--g)}
+.epn{display:none}
+.epn.act{display:block}
+.cs{border:1px solid var(--bd);border-radius:8px;padding:13px 15px;margin-bottom:12px;background:var(--n3)}
+.cst{font:600 .92rem 'Cormorant Garamond',serif;color:var(--g);margin-bottom:11px}
+.eg{display:grid;grid-template-columns:70px 1fr 1fr 1fr 1fr;gap:6px 8px;align-items:center;font-size:.74rem}
+.eg .h{color:var(--m);font-size:.58rem;text-transform:uppercase;letter-spacing:.06em;font-weight:500}
+.eg .lb{color:var(--m);font-size:.74rem}
+.eg input{background:var(--n4);border:1px solid rgba(201,168,76,.15);border-radius:4px;padding:4px 7px;color:var(--o);font:.73rem 'Jost',sans-serif;outline:none;width:100%}
+.eg input:focus{border-color:var(--g)}
+.pgr{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:11px}
+.pcd{background:var(--n2);border:1px solid var(--bd);border-radius:7px;padding:13px 15px;cursor:pointer;transition:all .2s}
+.pcd:hover{border-color:var(--g);transform:translateY(-1px);background:var(--n3)}
+.pcn{font-weight:600;color:var(--w);font-size:.95rem;margin-bottom:4px}
+.pcm{font-size:.7rem;color:var(--m)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:13px}
+.rcp{background:#fff;color:#111;padding:22px;font-family:'Courier New',monospace;font-size:11px;max-width:360px;margin:0 auto}
+.rcp h2{text-align:center;font-size:14px;font-family:serif;margin-bottom:2px}
+.rcp .rs{text-align:center;font-size:9px;color:#666;margin-bottom:3px}
+.rcp hr{border:none;border-top:1px dashed #bbb;margin:5px 0}
+.rcp .rr{display:flex;justify-content:space-between;margin:2px 0}
+.rcp .rt{font-weight:bold;font-size:13px}
+.pls{background:var(--n3);border-radius:6px;padding:13px 17px;margin-bottom:11px}
+.plr{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:.78rem}
+.plr:last-child{border-bottom:none}
+.plt{font-weight:600;color:var(--g);font-size:.85rem;margin-top:7px;padding-top:9px;border-top:1px solid var(--bd)}
+.pln{background:linear-gradient(135deg,rgba(201,168,76,.08),rgba(201,168,76,.04));border:1px solid var(--g);border-radius:8px;padding:20px 24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:16px}
+.pln .lb{font:500 .82rem 'Jost',sans-serif;text-transform:uppercase;letter-spacing:.08em;color:var(--m)}
+.pln .am{font:700 2.1rem 'Cormorant Garamond',serif}
+.al{padding:11px 15px;border-radius:6px;font-size:.79rem;margin-bottom:13px;line-height:1.55}
+.al-w{background:rgba(230,126,34,.12);border:1px solid rgba(230,126,34,.3);color:#f0a456}
+.al-i{background:rgba(41,128,185,.12);border:1px solid rgba(41,128,185,.3);color:#74b9ff}
+.al-s{background:rgba(39,174,96,.12);border:1px solid rgba(39,174,96,.3);color:#7fdda0}
+.ld{text-align:center;padding:36px;color:var(--m);font-size:.82rem}
+.sp{display:inline-block;width:24px;height:24px;border:2px solid var(--bd);border-top-color:var(--g);border-radius:50%;animation:sp .8s linear infinite;margin-bottom:8px}
+@keyframes sp{to{transform:rotate(360deg)}}
+#tst{position:fixed;bottom:20px;right:20px;background:var(--n2);border:1px solid var(--g);color:var(--g2);padding:10px 18px;border-radius:6px;font-size:.79rem;z-index:999;opacity:0;transition:opacity .3s;pointer-events:none;max-width:320px;box-shadow:0 10px 30px rgba(0,0,0,.4)}
+#tst.show{opacity:1}
+#tst.dg{border-color:#e87060;color:#e87060}
+#tst.sc{border-color:var(--gr);color:#7fdda0}
+.code{background:#061018;color:#ddd;padding:11px;border-radius:6px;font-family:'Courier New',monospace;font-size:.69rem;overflow-x:auto;white-space:pre;line-height:1.5;border:1px solid var(--bd2);margin:7px 0;max-height:260px;overflow-y:auto}
+.hs{padding:10px 13px;background:var(--n3);border-left:3px solid var(--g);border-radius:0 6px 6px 0;margin-bottom:8px;font-size:.79rem;line-height:1.55}
+.hs b{color:var(--g2)}
+.rh{background:rgba(41,128,185,.08);border:1px dashed rgba(41,128,185,.3);color:#74b9ff;padding:8px 12px;border-radius:5px;font-size:.74rem;margin-bottom:13px}
+hr.sep{border:none;border-top:1px solid var(--bd2);margin:13px 0}
+.sxr td{background:rgba(0,0,0,.25);color:var(--g);font-weight:600;font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;padding:8px 13px}
+@media(max-width:860px){.g2,.g3,.r2,.r3,.r4{grid-template-columns:1fr}main{padding:14px}.st{grid-template-columns:1fr 1fr}.eg{grid-template-columns:60px 1fr 1fr;font-size:.7rem}.eg .h:nth-child(n+4),.eg input:nth-child(5n+4),.eg input:nth-child(5n+5){display:none}}
+@media print{body{background:#fff}header,nav,#tst,.ph button{display:none!important}.rcp{box-shadow:none}.pg{display:block!important}main{padding:0}}
+</style>
+</head>
+<body>
+
+<!-- ════ SETUP ════ -->
+<div id="ov-setup" class="ov"><div class="ovb md">
+<div class="lg-h"><h1>ADIF Optical</h1><p>Firebase Cloud Setup</p></div>
+<div class="al al-i"><b>📡 One-Time Setup</b><br>Connect to Firebase (free) for online accounts &amp; cloud database.</div>
+<div class="hs"><b>1.</b> Visit <a href="https://console.firebase.google.com" target="_blank">console.firebase.google.com</a> → Create project</div>
+<div class="hs"><b>2.</b> Build → <b>Authentication → Sign-in method → Email/Password → Enable</b></div>
+<div class="hs"><b>3.</b> Build → <b>Firestore Database → Create</b> → start in <b>production</b> mode</div>
+<div class="hs"><b>4.</b> ⚙ Project Settings → Your apps → Web (&lt;/&gt;) → Register → copy values below</div>
+<div class="hs"><b>5.</b> Firestore → <b>Rules</b> tab → paste rules below → Publish</div>
+<details style="margin:11px 0"><summary style="cursor:pointer;color:var(--g);font-size:.83rem;padding:5px 0">📋 Click for Firestore Security Rules</summary>
+<div class="code">rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function si() { return request.auth != null; }
+    function rl() { return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role; }
+    function isAdmin() { return si() &amp;&amp; rl() == 'admin'; }
+    function isDoctor() { return si() &amp;&amp; rl() == 'doctor'; }
+    function isStaff() { return si() &amp;&amp; rl() in ['admin','doctor','receptionist','optician']; }
+
+    match /users/{uid} {
+      allow read: if si();
+      allow create: if request.auth.uid == uid;
+      allow update: if isAdmin() || request.auth.uid == uid;
+      allow delete: if isAdmin();
+    }
+    match /counters/{id} {
+      allow read, write: if isStaff();
+    }
+    match /patients/{id} {
+      allow read: if isStaff();
+      allow create, update: if isStaff();
+      allow delete: if isAdmin();
+    }
+    match /examinations/{id} {
+      allow read: if isStaff();
+      allow create, update, delete: if isAdmin() || isDoctor();
+    }
+    match /sales/{id}        { allow read, write: if isStaff(); }
+    match /repairs/{id}      { allow read, write: if isStaff(); }
+    match /expenditures/{id} { allow read, write: if isStaff(); }
+    match /frames/{id}       { allow read: if isStaff(); allow write: if isAdmin() || rl()=='receptionist'; }
+    match /lenses/{id}       { allow read: if isStaff(); allow write: if isAdmin() || rl()=='receptionist'; }
+    match /accessories/{id}  { allow read: if isStaff(); allow write: if isAdmin() || rl()=='receptionist'; }
+  }
+}</div></details>
+<hr class="sep">
+<h3 style="font:600 1rem 'Cormorant Garamond',serif;color:var(--g);margin-bottom:10px">Enter Firebase config:</h3>
+<div class="fg"><label>API Key *</label><input type="text" id="cfg-api"></div>
+<div class="fg"><label>Auth Domain *</label><input type="text" id="cfg-auth" placeholder="proj.firebaseapp.com"></div>
+<div class="fg"><label>Project ID *</label><input type="text" id="cfg-proj"></div>
+<div class="r2"><div class="fg"><label>Storage Bucket</label><input type="text" id="cfg-bk"></div><div class="fg"><label>Messaging Sender ID</label><input type="text" id="cfg-ms"></div></div>
+<div class="fg"><label>App ID *</label><input type="text" id="cfg-app"></div>
+<div id="cfg-er" class="er"></div>
+<button class="btn btn-p btn-bk" onclick="saveCfg()">Connect to Firebase →</button>
+</div></div>
+
+<!-- ════ AUTH ════ -->
+<div id="ov-auth" class="ov"><div class="ovb sm">
+<div class="lg-h"><h1>ADIF Optical</h1><p>Practice Management</p></div>
+<div class="tabs"><button class="act" onclick="atb('lg')">Sign In</button><button onclick="atb('rg')">Create Account</button></div>
+<div id="lg-form">
+<div class="fg"><label>Email</label><input type="email" id="l-em"></div>
+<div class="fg"><label>Password</label><input type="password" id="l-pw"></div>
+<div id="l-er" class="er"></div>
+<button class="btn btn-p btn-bk" onclick="lgIn()">Sign In</button>
+</div>
+<div id="rg-form" style="display:none">
+<div class="fg"><label>Full Name *</label><input type="text" id="r-nm"></div>
+<div class="fg"><label>Email *</label><input type="email" id="r-em"></div>
+<div class="fg"><label>Password * (min 6 chars)</label><input type="password" id="r-pw"></div>
+<div class="fg"><label>Setup Code (optional)</label><input type="text" id="r-cd" placeholder="ADMIN2025 or DOCTOR2025"></div>
+<div id="r-er" class="er"></div>
+<button class="btn btn-p btn-bk" onclick="rgUp()">Create Account</button>
+<p style="font-size:.7rem;color:var(--m);margin-top:9px;text-align:center;line-height:1.5">First user → admin.<br><b style="color:var(--g)">ADMIN2025</b>=admin · <b style="color:var(--g)">DOCTOR2025</b>=doctor · No code = receptionist</p>
+</div>
+<div style="text-align:center;margin-top:14px;display:flex;gap:7px;justify-content:center">
+<button class="btn btn-s btn-sm" onclick="reCfg()">⚙ Reconfigure</button>
+<button class="btn btn-s btn-sm" onclick="om('mo-help')">❓ Multi-Device</button>
+</div>
+</div></div>
+
+<!-- ════ HELP MODAL ════ -->
+<div class="mo" id="mo-help"><div class="mb">
+<div class="mh"><span class="mt">Multi-Device &amp; Deployment Guide</span><button class="mc" onclick="cm('mo-help')">×</button></div>
+<div class="mby">
+<div class="al al-s"><b>✓ Cloud-synced</b> — Once configured, your data lives in Firebase. Same login from any device shows the same data.</div>
+
+<h3 style="font:600 1.05rem 'Cormorant Garamond',serif;color:var(--g);margin-bottom:9px">🚀 Hosting Options</h3>
+
+<div class="hs"><b>Option A — Replit (easiest, recommended)</b><br>
+1. Go to <a href="https://replit.com" target="_blank">replit.com</a> → Sign up free<br>
+2. Click <b>Create Repl</b> → choose template <b>"HTML, CSS, JS"</b><br>
+3. Delete the existing <code>index.html</code> → upload this file and rename it to <code>index.html</code><br>
+4. Click <b>Run</b> at top → Replit gives you a URL like <code>your-repl.your-name.repl.co</code><br>
+5. Click the URL → use it on any phone, laptop, Chrome account<br>
+6. Each staff member opens that URL → enters your Firebase config once → signs in
+</div>
+
+<div class="hs"><b>Option B — Netlify Drop (drag &amp; drop)</b><br>
+Go to <a href="https://app.netlify.com/drop" target="_blank">app.netlify.com/drop</a> → drag this HTML file → instant URL → share with your staff.
+</div>
+
+<div class="hs"><b>Option C — Firebase Hosting (most professional)</b><br>
+Install: <code>npm install -g firebase-tools</code> → <code>firebase login</code> → put HTML in folder → <code>firebase init hosting</code> → <code>firebase deploy</code>. URL: <code>your-project.web.app</code>
+</div>
+
+<div class="hs"><b>Option D — Email/share the file directly</b><br>
+Send the HTML file via WhatsApp/email. Each device opens it once, enters Firebase config (saved per-device), then signs in normally.
+</div>
+
+<hr class="sep">
+<h3 style="font:600 1.05rem 'Cormorant Garamond',serif;color:var(--g);margin-bottom:9px">📋 What each user needs</h3>
+<ul style="font-size:.83rem;color:var(--o);line-height:1.8;padding-left:20px">
+<li>The URL (or HTML file) — same for everyone</li>
+<li>Same Firebase config (only entered once per device — saves automatically)</li>
+<li>Their own email + password</li>
+<li>Internet connection</li>
+</ul>
+
+<hr class="sep">
+<h3 style="font:600 1.05rem 'Cormorant Garamond',serif;color:var(--g);margin-bottom:9px">🔐 Roles &amp; how to assign them</h3>
+<ul style="font-size:.83rem;color:var(--o);line-height:1.8;padding-left:20px">
+<li><b style="color:var(--g2)">First user to register</b> → automatic <b>Admin</b></li>
+<li>Sign up with code <b style="color:var(--g)">DOCTOR2025</b> → <b>Doctor</b> (clinical access)</li>
+<li>Sign up with code <b style="color:var(--g)">ADMIN2025</b> → <b>Admin</b></li>
+<li>Sign up with no code → <b>Receptionist</b> (sales, expenditure, view-only patient details)</li>
+<li>Admin can change anyone's role in the <b>Users</b> page</li>
+</ul>
+
+<hr class="sep">
+<h3 style="font:600 1.05rem 'Cormorant Garamond',serif;color:var(--g);margin-bottom:9px">🎯 What each role sees</h3>
+<ul style="font-size:.82rem;color:var(--o);line-height:1.8;padding-left:20px">
+<li><b style="color:#c39bd3">Admin:</b> everything — dashboard, patients, sales, stock, repairs, expenditure, reports/P&amp;L, user management</li>
+<li><b style="color:#74b9ff">Doctor:</b> dashboard, patients (full clinical access — case history, refraction, anterior/posterior segment, diagnosis, treatment, management)</li>
+<li><b style="color:#7fdda0">Receptionist:</b> dashboard, patient details (name/age/sex/address + diagnosis &amp; prescription view-only — cannot add/edit clinical history), sales, sales history, prescriptions, expenditure</li>
+<li><b style="color:var(--g2)">Optician:</b> dashboard, prescriptions, repairs (delivers/fits glasses from prescriptions sent by reception/doctor; updates repair status — Pending / On the Process / Glasses Done)</li>
+</ul>
+
+<hr class="sep">
+<div class="al al-w"><b>⚠ Important:</b> Don't forget Firestore Security Rules (Step 5). Without them, data is publicly accessible.</div>
+</div>
+<div class="mf"><button class="btn btn-p" onclick="cm('mo-help')">Got it</button></div>
+</div></div>
+
+<!-- ════ APP ════ -->
+<div id="app" style="display:none">
+<header>
+<div class="lg">ADIF <span>Optical</span></div>
+<nav id="nav-main"></nav>
+<div class="ua">
+<div class="ub"><div class="un" id="h-un">—</div><div class="ur" id="h-ur">—</div></div>
+<button class="btn btn-sm btn-s" onclick="om('mo-help')">?</button>
+<button class="btn btn-sm btn-s" onclick="lgOut()">Logout</button>
+</div>
+</header>
+<main>
+
+<!-- DASHBOARD -->
+<div id="p-dashboard" class="pg"><div class="ph"><div class="pt"><small>Overview</small>Dashboard</div></div><div class="st" id="dh-st"></div><div class="g2" id="dh-g"></div></div>
+
+<!-- PATIENTS -->
+<div id="p-patients" class="pg"><div class="ph"><div class="pt"><small>Records</small>Patients</div><button class="btn btn-p" onclick="opPt()">+ New Patient</button></div>
+<div class="sb"><input type="text" id="ps-q" placeholder="Search by name or phone..." oninput="rPats()"><select id="ps-gn" onchange="rPats()"><option value="">All Genders</option><option>Male</option><option>Female</option><option>Other</option></select></div>
+<div id="pt-list" class="pgr"></div></div>
+
+<!-- PATIENT DETAIL -->
+<div id="p-patient-detail" class="pg">
+<div class="ph"><div class="pt" id="pd-nm"><small>Patient File</small>—</div>
+<div style="display:flex;gap:8px;flex-wrap:wrap">
+<button class="btn btn-s" onclick="sp('patients')">← Back</button>
+<button class="btn btn-s" id="bt-ed-pt" onclick="edCp()">✏ Edit Info</button>
+<button class="btn btn-p" id="bt-nx-em" onclick="opEx()" style="display:none">+ New Examination</button>
+</div></div>
+<div class="g2" style="margin-bottom:16px">
+<div class="c"><div class="ch"><span class="ct">Personal Information</span></div><div class="cb" id="pd-info"></div></div>
+<div class="c"><div class="ch"><span class="ct">Latest Diagnosis &amp; Prescription</span></div><div class="cb" id="pd-rx"></div></div>
+</div>
+<div id="pd-rh" style="display:none"><div class="rh">ℹ️ Clinical history is restricted to doctors. The diagnosis &amp; prescription above (written by the doctor) are available to you for fitting purposes only.</div></div>
+<div id="pd-cs" style="display:none">
+<div style="font:600 1.22rem 'Cormorant Garamond',serif;color:var(--g2);margin-bottom:12px">Clinical Examination History</div>
+<div id="pd-ex"></div>
+</div></div>
+
+<!-- NEW SALE -->
+<div id="p-sales" class="pg">
+<div class="ph"><div class="pt"><small>Point of Sale</small>New Sale</div></div>
+<div class="c"><div class="ch"><span class="ct">Customer / Patient</span></div><div class="cb">
+<div class="r4">
+<div class="fg"><label>Link Patient (optional)</label><select id="s-pt" onchange="onSPt()"><option value="">— Walk-in —</option></select></div>
+<div class="fg"><label>Reg. No. (returning client)</label><input type="text" id="s-reg" placeholder="e.g. ADIF-0001" onblur="onSReg()"></div>
+<div class="fg"><label>Customer Name *</label><input type="text" id="s-nm"></div>
+<div class="fg"><label>Sale Date *</label><input type="date" id="s-dt"></div>
+</div>
+<div class="r4">
+<div class="fg"><label>Phone *</label><input type="tel" id="s-ph"></div>
+<div class="fg"><label>Address</label><input type="text" id="s-ad"></div>
+<div class="fg">&nbsp;</div>
+<div class="fg">&nbsp;</div>
+</div></div></div>
+<div class="c"><div class="ch"><span class="ct">Frame</span></div><div class="cb">
+<div class="r2"><div class="fg"><label>Select Frame</label><select id="s-fr" onchange="onSFr()"><option value="">— No Frame —</option></select></div><div class="fg"><label>Frame Price (TZS)</label><input type="number" id="s-frp" oninput="cTo()"></div></div>
+</div></div>
+<div class="c"><div class="ch"><span class="ct">Lenses &amp; Prescription</span></div><div class="cb">
+<div class="r4" style="margin-bottom:12px">
+<div class="fg"><label>Lens Type</label><select id="s-lt" onchange="uLR()"><option value="">— Select —</option><option>Single Vision</option><option>Cylinder (SV)</option><option>Bifocal</option><option>Progressive</option><option>Reading Glass</option></select></div>
+<div class="fg"><label>Power Range</label><select id="s-lr" onchange="uLM()"><option value="">— Select —</option></select></div>
+<div class="fg"><label>Material</label><select id="s-lm" onchange="fLP()"><option value="">— Select —</option></select></div>
+<div class="fg"><label>Eyes</label><select id="s-le-cnt" onchange="fLP()"><option value="2">Pair (both eyes)</option><option value="1">Single eye</option></select></div>
+</div>
+<div class="r4">
+<div class="fg"><label>Price / Eye (TZS)</label><input type="number" id="s-lpe" oninput="cLens()"></div>
+<div class="fg"><label>Lens Total (TZS)</label><input type="number" id="s-lp" oninput="cTo()" readonly style="color:var(--g)"></div>
+<div class="fg"><label>&nbsp;</label><div style="font-size:.68rem;color:var(--m);padding-top:9px">Lens Total = Price/Eye × Eyes</div></div>
+<div class="fg">&nbsp;</div>
+</div>
+<div class="r4">
+<div class="fg"><label>Right Eye</label><input type="text" id="s-re" placeholder="Sph/Cyl x Axis"></div>
+<div class="fg"><label>Left Eye</label><input type="text" id="s-le" placeholder="Sph/Cyl x Axis"></div>
+<div class="fg"><label>PD (mm)</label><input type="text" id="s-pd"></div>
+<div class="fg"><label>Add</label><input type="text" id="s-ap"></div>
+</div></div></div>
+<div class="c"><div class="ch"><span class="ct">Accessories &amp; Payment</span></div><div class="cb">
+<div class="r4">
+<div class="fg"><label>Accessory</label><select id="s-ac" onchange="onSAc()"><option value="">— None —</option></select></div>
+<div class="fg"><label>Acc Price</label><input type="number" id="s-acp" oninput="cTo()"></div>
+<div class="fg"><label>Discount (TZS)</label><input type="number" id="s-ds" oninput="cTo()"></div>
+<div class="fg"><label>Notes</label><input type="text" id="s-nt"></div>
+</div>
+<div class="st" style="margin:12px 0">
+<div class="sx"><div class="sl">Frame + Acc</div><div class="sv" id="sm-fr" style="font-size:1.4rem">0</div><div class="ss">TZS</div></div>
+<div class="sx"><div class="sl">Lenses</div><div class="sv" id="sm-ln" style="font-size:1.4rem">0</div><div class="ss">TZS</div></div>
+<div class="sx" style="border-color:var(--g);background:rgba(201,168,76,.06)"><div class="sl">Total</div><div class="sv" id="sm-tt">0</div><div class="ss">After discount</div></div>
+</div>
+<div class="r3">
+<div class="fg"><label>Amount Paid (TZS)</label><input type="number" id="s-pd-pd" oninput="cCh()"></div>
+<div class="fg"><label>Payment Method</label><select id="s-mt"><option>Cash</option><option>M-Pesa</option><option>Bank Transfer</option><option>Airtel Money</option><option>Credit / Owe</option></select></div>
+<div class="fg"><label>Change / Balance</label><input type="text" id="s-ch" readonly style="color:var(--g)"></div>
+</div>
+<div class="fac">
+<button class="btn btn-p" onclick="svSale()">💾 Save Sale</button>
+<button class="btn btn-s" onclick="clSale()">Clear</button>
+<button class="btn btn-s" onclick="prRcp()">🖨 Last Receipt</button>
+</div>
+</div></div></div>
+
+<!-- SALES HIST -->
+<div id="p-sales-history" class="pg">
+<div class="ph"><div class="pt"><small>Records</small>Sales History</div></div>
+<div class="sb"><input type="text" id="sh-q" placeholder="Search..." oninput="rSH()"><select id="sh-mt" onchange="rSH()"><option value="">All Methods</option><option>Cash</option><option>M-Pesa</option><option>Bank Transfer</option><option>Airtel Money</option><option>Credit / Owe</option></select><input type="date" id="sh-fr" onchange="rSH()"><input type="date" id="sh-to" onchange="rSH()"></div>
+<div class="c"><div class="ch"><span class="ct">All Sales</span><span id="sh-ct" style="color:var(--m);font-size:.76rem"></span></div>
+<div class="tw"><table><thead><tr><th>Date</th><th>Customer</th><th>Phone</th><th>Frame</th><th>Lens</th><th>Total</th><th>Paid</th><th>Method</th><th>Actions</th></tr></thead><tbody id="sh-bd"></tbody></table></div>
+</div></div>
+
+<!-- PRESCRIPTIONS -->
+<div id="p-prescriptions" class="pg">
+<div class="ph"><div class="pt"><small>Records</small>Prescriptions</div></div>
+<div class="sb"><input type="text" id="px-q" placeholder="Search by patient name..." oninput="rPx()"></div>
+<div class="c"><div class="tw"><table><thead><tr><th>Date</th><th>Patient</th><th>Phone</th><th>R Eye</th><th>L Eye</th><th>PD</th><th>Add</th><th>Lens</th><th>Source</th><th>Actions</th></tr></thead><tbody id="px-bd"></tbody></table></div></div></div>
+
+<!-- LENSES -->
+<div id="p-lenses" class="pg">
+<div class="ph"><div class="pt"><small>Inventory</small>Lens Stock</div><button class="btn btn-p" onclick="opLn()">+ Add Lens</button></div>
+<div class="sb"><input type="text" id="ls-q" placeholder="Search..." oninput="rLn()"><select id="ls-tp" onchange="rLn()"><option value="">All Types</option><option>Single Vision</option><option>Cylinder (SV)</option><option>Bifocal</option><option>Progressive</option><option>Reading Glass</option></select></div>
+<div class="c"><div class="tw"><table><thead><tr><th>Type</th><th>Range</th><th>Material</th><th>Qty</th><th>Cost</th><th>Sell</th><th>Status</th><th>Actions</th></tr></thead><tbody id="ls-bd"></tbody></table></div></div></div>
+
+<!-- FRAMES -->
+<div id="p-frames" class="pg">
+<div class="ph"><div class="pt"><small>Inventory</small>Frame Stock</div><button class="btn btn-p" onclick="opFr()">+ Add Frame</button></div>
+<div class="sb"><input type="text" id="fs-q" placeholder="Search..." oninput="rFr()"><select id="fs-mt" onchange="rFr()"><option value="">All Materials</option><option>Metal</option><option>TR</option><option>TR90</option><option>Acetate</option><option>Wood</option><option>TR/Metal</option><option>TR/Wood</option></select></div>
+<div class="c"><div class="tw"><table><thead><tr><th>Model</th><th>Material</th><th>Qty</th><th>Sell</th><th>Notes</th><th>Status</th><th>Actions</th></tr></thead><tbody id="fs-bd"></tbody></table></div></div></div>
+
+<!-- ACCESSORIES -->
+<div id="p-accessories" class="pg">
+<div class="ph"><div class="pt"><small>Inventory</small>Accessories</div><button class="btn btn-p" onclick="opAc()">+ Add Item</button></div>
+<div class="c"><div class="tw"><table><thead><tr><th>Item</th><th>Category</th><th>Qty</th><th>Cost</th><th>Sell</th><th>Status</th><th>Actions</th></tr></thead><tbody id="as-bd"></tbody></table></div></div></div>
+
+<!-- REPAIRS -->
+<div id="p-repairs" class="pg">
+<div class="ph"><div class="pt"><small>Service</small>Frame Repairs</div><button class="btn btn-p" onclick="opRp()">+ New Job</button></div>
+<div class="sb"><input type="text" id="rs-q" placeholder="Search..." oninput="rRp()"><select id="rs-st" onchange="rRp()"><option value="">All Status</option><option>Pending</option><option>On the Process</option><option>Glasses Done</option><option>In Progress</option><option>Completed</option><option>Collected</option></select></div>
+<div class="c"><div class="tw"><table><thead><tr><th>Date</th><th>Customer</th><th>Phone</th><th>Type</th><th>Description</th><th>Cost</th><th>Deposit</th><th>Status</th><th>Actions</th></tr></thead><tbody id="rs-bd"></tbody></table></div></div></div>
+
+<!-- EXPENDITURE -->
+<div id="p-expenditure" class="pg">
+<div class="ph"><div class="pt"><small>Finance</small>Expenditure</div><button class="btn btn-p" onclick="opEp()">+ Add Expense</button></div>
+<div class="sb"><select id="ep-ct" onchange="rEp()"><option value="">All Categories</option><option>Rent</option><option>Salaries</option><option>Stock Purchase</option><option>Utilities</option><option>Transport</option><option>Marketing</option><option>Equipment</option><option>Repair &amp; Maintenance</option><option>Miscellaneous</option></select><input type="date" id="ep-fr" onchange="rEp()"><input type="date" id="ep-to" onchange="rEp()"></div>
+<div class="st" id="ep-st" style="margin-bottom:12px"></div>
+<div class="c"><div class="tw"><table><thead><tr><th>Date</th><th>Category</th><th>Amount</th><th>Description</th><th>Receipt #</th><th>By</th><th>Actions</th></tr></thead><tbody id="ep-bd"></tbody></table></div></div></div>
+
+<!-- REPORTS / P&L -->
+<div id="p-reports" class="pg">
+<div class="ph"><div class="pt"><small>Finance</small>Reports &amp; Profit / Loss</div></div>
+<div class="c" style="margin-bottom:14px"><div class="ch"><span class="ct">Report Period</span></div><div class="cb">
+<div class="r4">
+<div class="fg"><label>Preset</label><select id="rp-ps" onchange="apRp()"><option value="month">This Month</option><option value="lastmonth">Last Month</option><option value="quarter">Last 3 Months</option><option value="year">This Year</option><option value="all">All Time</option><option value="custom">Custom Range</option></select></div>
+<div class="fg"><label>From</label><input type="date" id="rp-fr"></div>
+<div class="fg"><label>To</label><input type="date" id="rp-to"></div>
+<div class="fg"><label>&nbsp;</label><button class="btn btn-p" onclick="ldRp()">Generate Report</button></div>
+</div>
+<div class="fac" style="margin-top:6px">
+<button class="btn btn-s btn-sm" onclick="exportReportExcel()">⬇ Download Excel (.xlsx)</button>
+<button class="btn btn-s btn-sm" onclick="exportReportWord()">⬇ Download Word (.doc)</button>
+</div></div></div>
+<div id="rp-out"></div></div>
+
+<!-- USERS -->
+<div id="p-users" class="pg">
+<div class="ph"><div class="pt"><small>Admin</small>User Management</div></div>
+<div class="c"><div class="tw"><table><thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Created</th><th>Actions</th></tr></thead><tbody id="us-bd"></tbody></table></div></div></div>
+
+<!-- PRICES -->
+<div id="p-prices" class="pg">
+<div class="ph"><div class="pt"><small>Reference</small>Lens Price List</div></div>
+<div class="c"><div class="ch"><span class="ct">All Prices in TZS — Per Eye</span></div><div class="tw"><table><thead><tr><th>Lens / Power</th><th>Glass (PG X)</th><th>Plastic (Trans.)</th><th>CR Mar</th><th>CR White</th><th>CR (Blue Cut)</th><th>Polycarbonate</th></tr></thead><tbody id="px-bd2"></tbody></table></div></div></div>
+
+</main></div>
+
+<!-- ════ PATIENT MODAL ════ -->
+<div class="mo" id="mo-pt"><div class="mb">
+<div class="mh"><span class="mt" id="pt-mt">New Patient</span><button class="mc" onclick="cm('mo-pt')">×</button></div>
+<div class="mby">
+<div style="font:600 .96rem 'Cormorant Garamond',serif;color:var(--g);margin-bottom:9px">Demographic Details</div>
+<div class="r3">
+<div class="fg"><label>Full Name *</label><input type="text" id="pm-nm"></div>
+<div class="fg"><label>Date of Birth</label><input type="date" id="pm-db"></div>
+<div class="fg"><label>Gender *</label><select id="pm-gn"><option>Male</option><option>Female</option><option>Other</option></select></div>
+</div>
+<div class="r3">
+<div class="fg"><label>Phone *</label><input type="tel" id="pm-ph"></div>
+<div class="fg"><label>Email</label><input type="email" id="pm-em"></div>
+<div class="fg"><label>Occupation</label><input type="text" id="pm-oc"></div>
+</div>
+<div class="fg"><label>Address / Area</label><input type="text" id="pm-ad"></div>
+<hr class="sep">
+<div style="font:600 .96rem 'Cormorant Garamond',serif;color:var(--g);margin-bottom:9px">Emergency Contact</div>
+<div class="r2"><div class="fg"><label>Name</label><input type="text" id="pm-en"></div><div class="fg"><label>Phone</label><input type="tel" id="pm-ep"></div></div>
+</div>
+<div class="mf"><button class="btn btn-s" onclick="cm('mo-pt')">Cancel</button><button class="btn btn-p" onclick="svPt()">Save Patient</button></div>
+</div></div>
+
+<!-- ════ EXAMINATION MODAL ════ -->
+<div class="mo" id="mo-ex"><div class="mb lg">
+<div class="mh"><span class="mt" id="ex-mt">New Eye Examination</span><button class="mc" onclick="cm('mo-ex')">×</button></div>
+<div class="mby">
+<div class="etb">
+<button class="act" onclick="exTb('hs')">1. Case History</button>
+<button onclick="exTb('rf')">2. Refraction &amp; VA</button>
+<button onclick="exTb('an')">3. Anterior Segment</button>
+<button onclick="exTb('po')">4. Posterior Segment</button>
+<button onclick="exTb('mg')">5. Diagnosis &amp; Management</button>
+</div>
+
+<div class="epn act" id="et-hs">
+<div class="r3">
+<div class="fg"><label>Visit Date *</label><input type="date" id="x-dt"></div>
+<div class="fg"><label>Examined By</label><input type="text" id="x-dr"></div>
+<div class="fg"><label>Visit Type</label><select id="x-vt"><option>Initial Consultation</option><option>Follow-up</option><option>Routine Check</option><option>Emergency</option><option>Post-op Review</option></select></div>
+</div>
+<div class="fg"><label>Chief Complaint *</label><input type="text" id="x-cc"></div>
+<div class="fg"><label>History of Presenting Illness (HPI)</label><textarea id="x-hp" placeholder="Onset, duration, severity, progression..."></textarea></div>
+<div class="r2">
+<div class="fg"><label>Past Ocular History</label><textarea id="x-poh" placeholder="Previous eye conditions, surgeries, trauma..."></textarea></div>
+<div class="fg"><label>Past Medical History</label><textarea id="x-pmh" placeholder="Diabetes, hypertension, autoimmune..."></textarea></div>
+</div>
+<div class="r2">
+<div class="fg"><label>Family History</label><textarea id="x-fh" placeholder="Glaucoma, refractive errors, AMD..."></textarea></div>
+<div class="fg"><label>Current Medications</label><textarea id="x-md"></textarea></div>
+</div>
+<div class="r2"><div class="fg"><label>Allergies</label><input type="text" id="x-al"></div><div class="fg"><label>Visual Demands / Lifestyle</label><input type="text" id="x-lf"></div></div>
+</div>
+
+<div class="epn" id="et-rf">
+<div class="cs"><div class="cst">Visual Acuity</div>
+<div class="eg">
+<div></div><div class="h">Dist Unaided</div><div class="h">Pinhole</div><div class="h">Dist Aided</div><div class="h">Near</div>
+<div class="lb">Right (OD)</div><input id="x-vrod" placeholder="6/6"><input id="x-vrph"><input id="x-vrad"><input id="x-vrn">
+<div class="lb">Left (OS)</div><input id="x-vlod" placeholder="6/6"><input id="x-vlph"><input id="x-vlad"><input id="x-vln">
+</div></div>
+<div class="cs"><div class="cst">Objective Refraction (Retinoscopy / Auto-Ref)</div>
+<div class="eg">
+<div></div><div class="h">Sphere</div><div class="h">Cylinder</div><div class="h">Axis</div><div class="h"></div>
+<div class="lb">Right (OD)</div><input id="x-orsph"><input id="x-orcyl"><input id="x-orax"><div></div>
+<div class="lb">Left (OS)</div><input id="x-olsph"><input id="x-olcyl"><input id="x-olax"><div></div>
+</div></div>
+<div class="cs"><div class="cst">Subjective Refraction (Final Rx)</div>
+<div class="eg">
+<div></div><div class="h">Sphere</div><div class="h">Cylinder</div><div class="h">Axis</div><div class="h">Add</div>
+<div class="lb">Right (OD)</div><input id="x-srsph" placeholder="-1.00"><input id="x-srcyl" placeholder="-0.50"><input id="x-srax" placeholder="180"><input id="x-srad" placeholder="+2.00">
+<div class="lb">Left (OS)</div><input id="x-slsph"><input id="x-slcyl"><input id="x-slax"><input id="x-slad">
+</div>
+<div class="r3" style="margin-top:12px">
+<div class="fg"><label>PD (mm)</label><input type="text" id="x-pd"></div>
+<div class="fg"><label>BCVA Right</label><input type="text" id="x-bcr"></div>
+<div class="fg"><label>BCVA Left</label><input type="text" id="x-bcl"></div>
+</div></div>
+<div class="r4">
+<div class="fg"><label>Cover Test</label><input type="text" id="x-cv" placeholder="Ortho/Eso/Exo"></div>
+<div class="fg"><label>Ocular Motility (EOM)</label><input type="text" id="x-eom" placeholder="Full / Restricted"></div>
+<div class="fg"><label>Pupils</label><input type="text" id="x-pp" placeholder="PERRL / RAPD"></div>
+<div class="fg"><label>Color Vision</label><input type="text" id="x-cl"></div>
+</div>
+<div class="r2"><div class="fg"><label>Stereopsis</label><input type="text" id="x-st"></div><div class="fg"><label>NPC</label><input type="text" id="x-npc"></div></div>
+</div>
+
+<div class="epn" id="et-an">
+<div class="cs"><div class="cst">Slit Lamp / Anterior Segment</div>
+<div class="r2"><div class="fg"><label>Lids &amp; Lashes — Right</label><textarea id="x-ldr" placeholder="Normal / Inflammation / Stye"></textarea></div><div class="fg"><label>Lids &amp; Lashes — Left</label><textarea id="x-ldl"></textarea></div></div>
+<div class="r2"><div class="fg"><label>Conjunctiva — Right</label><textarea id="x-cjr" placeholder="Clear / Hyperaemia / Discharge"></textarea></div><div class="fg"><label>Conjunctiva — Left</label><textarea id="x-cjl"></textarea></div></div>
+<div class="r2"><div class="fg"><label>Cornea — Right</label><textarea id="x-cnr" placeholder="Clear / Opacity / Scar / KP"></textarea></div><div class="fg"><label>Cornea — Left</label><textarea id="x-cnl"></textarea></div></div>
+<div class="r2"><div class="fg"><label>Anterior Chamber — Right</label><textarea id="x-acr" placeholder="Deep &amp; clear / Cells / Flare"></textarea></div><div class="fg"><label>Anterior Chamber — Left</label><textarea id="x-acl"></textarea></div></div>
+<div class="r2"><div class="fg"><label>Iris — Right</label><textarea id="x-irr" placeholder="Normal / Atrophy / Synechiae"></textarea></div><div class="fg"><label>Iris — Left</label><textarea id="x-irl"></textarea></div></div>
+<div class="r2"><div class="fg"><label>Lens — Right</label><textarea id="x-lnr" placeholder="Clear / Cataract / IOL"></textarea></div><div class="fg"><label>Lens — Left</label><textarea id="x-lnl"></textarea></div></div>
+</div>
+<div class="cs"><div class="cst">Intraocular Pressure (IOP)</div>
+<div class="r3">
+<div class="fg"><label>Right (mmHg)</label><input type="text" id="x-iop-r"></div>
+<div class="fg"><label>Left (mmHg)</label><input type="text" id="x-iop-l"></div>
+<div class="fg"><label>Method</label><select id="x-iop-m"><option>NCT (Non-Contact)</option><option>Goldman Applanation</option><option>iCare</option><option>Schiotz</option><option>Digital Palpation</option></select></div>
+</div></div>
+<div class="fg"><label>Tear Film / Dry Eye Assessment</label><textarea id="x-tf" placeholder="TBUT, Schirmer, Fluorescein staining..."></textarea></div>
+</div>
+
+<div class="epn" id="et-po">
+<div class="cs"><div class="cst">Posterior Segment / Fundus</div>
+<div class="r2">
+<div class="fg"><label>Method</label><select id="x-fm"><option>Direct Ophthalmoscopy</option><option>Indirect Ophthalmoscopy</option><option>90D Lens (Slit Lamp)</option><option>78D Lens</option><option>Fundus Photo</option><option>Not Done</option></select></div>
+<div class="fg"><label>Pupil Dilation</label><select id="x-dl"><option>Not Dilated</option><option>Tropicamide 1%</option><option>Phenylephrine 2.5%</option><option>Both</option></select></div>
+</div>
+<div class="r2"><div class="fg"><label>Optic Disc — Right (CDR, color, margins)</label><textarea id="x-dcr" placeholder="CDR 0.3, pink, distinct margins..."></textarea></div><div class="fg"><label>Optic Disc — Left</label><textarea id="x-dcl"></textarea></div></div>
+<div class="r2"><div class="fg"><label>Macula — Right</label><textarea id="x-mcr" placeholder="FR+, no edema, no drusen..."></textarea></div><div class="fg"><label>Macula — Left</label><textarea id="x-mcl"></textarea></div></div>
+<div class="r2"><div class="fg"><label>Retinal Vessels — Right</label><textarea id="x-vsr" placeholder="A:V ratio, AV crossings..."></textarea></div><div class="fg"><label>Retinal Vessels — Left</label><textarea id="x-vsl"></textarea></div></div>
+<div class="r2"><div class="fg"><label>Periphery — Right</label><textarea id="x-prr" placeholder="No tears/holes/lattice"></textarea></div><div class="fg"><label>Periphery — Left</label><textarea id="x-prl"></textarea></div></div>
+<div class="r2"><div class="fg"><label>Vitreous — Right</label><textarea id="x-vir" placeholder="Clear / PVD / Floaters"></textarea></div><div class="fg"><label>Vitreous — Left</label><textarea id="x-vil"></textarea></div></div>
+</div>
+<div class="fg"><label>Other Posterior Investigations (OCT, Visual Fields, Fundus Photo, FFA)</label><textarea id="x-iv"></textarea></div>
+</div>
+
+<div class="epn" id="et-mg">
+<div class="r2">
+<div class="fg"><label>Primary Diagnosis *</label><input type="text" id="x-d1" placeholder="e.g. Myopia, Primary Open-Angle Glaucoma..."></div>
+<div class="fg"><label>Secondary Diagnosis</label><input type="text" id="x-d2"></div>
+</div>
+<div class="fg"><label>Differential Diagnoses</label><textarea id="x-dx"></textarea></div>
+<hr class="sep">
+<div style="font:600 .96rem 'Cormorant Garamond',serif;color:var(--g);margin-bottom:9px">Treatment &amp; Management</div>
+<div class="fg"><label>Medications Prescribed</label><textarea id="x-tr" placeholder="Drug, dose, frequency, duration. e.g. Timolol 0.5% BD x 3 months..."></textarea></div>
+<div class="fg"><label>Surgical / Procedural Recommendations</label><textarea id="x-sg"></textarea></div>
+<div class="fg"><label>Spectacle Prescription Issued</label><textarea id="x-sx"></textarea></div>
+<div class="fg"><label>Lifestyle Advice / Counseling</label><textarea id="x-av" placeholder="Diet, screens, UV protection, follow-up..."></textarea></div>
+<div class="r2"><div class="fg"><label>Referral</label><input type="text" id="x-rf"></div><div class="fg"><label>Next Appointment</label><input type="date" id="x-na"></div></div>
+<div class="fg"><label>Additional Notes</label><textarea id="x-nt"></textarea></div>
+</div>
+
+</div>
+<div class="mf"><button class="btn btn-s" onclick="cm('mo-ex')">Cancel</button><button class="btn btn-p" onclick="svEx()">Save Examination</button></div>
+</div></div>
+
+<!-- ════ OTHER MODALS ════ -->
+<div class="mo" id="mo-rcp"><div class="mb sm"><div class="mh"><span class="mt">Receipt</span><button class="mc" onclick="cm('mo-rcp')">×</button></div><div class="mby" id="rcp-c"></div><div class="mf"><button class="btn btn-s" onclick="cm('mo-rcp')">Close</button><button class="btn btn-p" onclick="window.print()">🖨 Print</button></div></div></div>
+
+<div class="mo" id="mo-ln"><div class="mb sm"><div class="mh"><span class="mt" id="ln-mt">Add Lens</span><button class="mc" onclick="cm('mo-ln')">×</button></div><div class="mby">
+<div class="fg"><label>Type *</label><select id="lm-tp"><option>Single Vision</option><option>Cylinder (SV)</option><option>Bifocal</option><option>Progressive</option><option>Reading Glass</option></select></div>
+<div class="fg"><label>Power Range *</label><input type="text" id="lm-rg" placeholder="e.g. +/-(0.25-2.00)"></div>
+<div class="fg"><label>Material *</label><select id="lm-mt"><option>Glass (PG X)</option><option>Plastic (Transition)</option><option>CR Mar</option><option>CR White</option><option>CR (Blue Cut)</option><option>Polycarbonate</option></select></div>
+<div class="r3"><div class="fg"><label>Qty</label><input type="number" id="lm-qt" min="0"></div><div class="fg"><label>Cost</label><input type="number" id="lm-cs"></div><div class="fg"><label>Sell</label><input type="number" id="lm-sl"></div></div>
+</div><div class="mf"><button class="btn btn-s" onclick="cm('mo-ln')">Cancel</button><button class="btn btn-p" onclick="svLn()">Save</button></div></div></div>
+
+<div class="mo" id="mo-fr"><div class="mb sm"><div class="mh"><span class="mt" id="fr-mt">Add Frame</span><button class="mc" onclick="cm('mo-fr')">×</button></div><div class="mby">
+<div class="r2"><div class="fg"><label>Model *</label><input type="text" id="fm-md"></div><div class="fg"><label>Material</label><select id="fm-mt"><option>Metal</option><option>TR</option><option>TR90</option><option>Acetate</option><option>Wood</option><option>TR/Metal</option><option>TR/Wood</option><option>Other</option></select></div></div>
+<div class="r2"><div class="fg"><label>Qty *</label><input type="number" id="fm-qt" min="0"></div><div class="fg"><label>Sell Price</label><input type="number" id="fm-pr" placeholder="25000"></div></div>
+<div class="r2"><div class="fg"><label>Color / Notes</label><input type="text" id="fm-cl"></div><div class="fg"><label>Supplier</label><input type="text" id="fm-sp"></div></div>
+</div><div class="mf"><button class="btn btn-s" onclick="cm('mo-fr')">Cancel</button><button class="btn btn-p" onclick="svFr()">Save</button></div></div></div>
+
+<div class="mo" id="mo-ac"><div class="mb sm"><div class="mh"><span class="mt" id="ac-mt">Add Accessory</span><button class="mc" onclick="cm('mo-ac')">×</button></div><div class="mby">
+<div class="fg"><label>Item Name *</label><input type="text" id="am-nm"></div>
+<div class="fg"><label>Category</label><select id="am-ct"><option>Hard Case</option><option>Soft Case</option><option>Microfibre Cloth</option><option>Lens Cleaner</option><option>Eyeglass Chain</option><option>Nose Pads</option><option>Repair Kit</option><option>Sunglasses</option><option>Other</option></select></div>
+<div class="r3"><div class="fg"><label>Qty</label><input type="number" id="am-qt" min="0"></div><div class="fg"><label>Cost</label><input type="number" id="am-cs"></div><div class="fg"><label>Sell</label><input type="number" id="am-sl"></div></div>
+</div><div class="mf"><button class="btn btn-s" onclick="cm('mo-ac')">Cancel</button><button class="btn btn-p" onclick="svAc()">Save</button></div></div></div>
+
+<div class="mo" id="mo-rp"><div class="mb sm"><div class="mh"><span class="mt" id="rp-mt">New Repair Job</span><button class="mc" onclick="cm('mo-rp')">×</button></div><div class="mby">
+<div class="r2"><div class="fg"><label>Customer Name *</label><input type="text" id="rm-nm"></div><div class="fg"><label>Phone *</label><input type="tel" id="rm-ph"></div></div>
+<div class="r2"><div class="fg"><label>Type</label><select id="rm-tp"><option>Frame Soldering</option><option>Nose Pad Replacement</option><option>Temple Replacement</option><option>Hinge Repair</option><option>Lens Replacement</option><option>Frame Adjustment</option><option>Screw Replacement</option><option>Full Frame Repair</option><option>Other</option></select></div><div class="fg"><label>Status</label><select id="rm-st"><option>Pending</option><option>On the Process</option><option>Glasses Done</option><option>In Progress</option><option>Completed</option><option>Collected</option></select></div></div>
+<div class="r2"><div class="fg"><label>Cost (TZS)</label><input type="number" id="rm-cs"></div><div class="fg"><label>Deposit Paid</label><input type="number" id="rm-dp"></div></div>
+<div class="fg"><label>Description</label><textarea id="rm-ds"></textarea></div>
+</div><div class="mf"><button class="btn btn-s" onclick="cm('mo-rp')">Cancel</button><button class="btn btn-p" onclick="svRp()">Save Job</button></div></div></div>
+
+<div class="mo" id="mo-ep"><div class="mb sm"><div class="mh"><span class="mt" id="ep-mt">Add Expense</span><button class="mc" onclick="cm('mo-ep')">×</button></div><div class="mby">
+<div class="r2"><div class="fg"><label>Date *</label><input type="date" id="em-dt"></div><div class="fg"><label>Category *</label><select id="em-ct"><option>Rent</option><option>Salaries</option><option>Stock Purchase</option><option>Utilities</option><option>Transport</option><option>Marketing</option><option>Equipment</option><option>Repair &amp; Maintenance</option><option>Miscellaneous</option></select></div></div>
+<div class="fg"><label>Amount (TZS) *</label><input type="number" id="em-am"></div>
+<div class="fg"><label>Description</label><textarea id="em-ds"></textarea></div>
+<div class="fg"><label>Receipt / Reference #</label><input type="text" id="em-rf"></div>
+</div><div class="mf"><button class="btn btn-s" onclick="cm('mo-ep')">Cancel</button><button class="btn btn-p" onclick="svEp()">Save</button></div></div></div>
+
+<div class="mo" id="mo-ur"><div class="mb sm"><div class="mh"><span class="mt">Change User Role</span><button class="mc" onclick="cm('mo-ur')">×</button></div><div class="mby">
+<div id="ur-if" style="margin-bottom:12px;color:var(--o);font-size:.84rem"></div>
+<div class="fg"><label>New Role</label><select id="ur-rl"><option value="admin">Admin (full access)</option><option value="doctor">Doctor (clinical)</option><option value="receptionist">Receptionist (sales/expenditure)</option><option value="optician">Optician (prescriptions &amp; repairs)</option></select></div>
+<input type="hidden" id="ur-id">
+</div><div class="mf"><button class="btn btn-s" onclick="cm('mo-ur')">Cancel</button><button class="btn btn-p" onclick="svUR()">Update Role</button></div></div></div>
+
+<div id="tst"></div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+/* ════ ADIF OPTICAL JS ════ */
+const A_CD='ADMIN2025',D_CD='DOCTOR2025';
+let db,auth,me=null,role=null,ed={},cp=null,lastSale=null,allP=[],allS=[],edSaleId=null,rpData=null;
+
+/* Prices below are PER EYE (each pair sale = 2x unless single-eye). Glass White column removed. Transition corrected. */
+const PD=[{section:'SINGLE VISION'},{range:'Plano 0.00',a:11000,b:30000,c:25000,d:15000,e:35000,f:75000},{range:'+/-(0.25-2.00)',a:12500,b:35000,c:25000,d:15000,e:60000,f:75000},{range:'+/-(2.50-3.75)',a:15000,b:40000,c:25000,d:15000,e:60000,f:75000},{range:'+/-(4.00-4.75)',a:20000,b:45000,c:30000,d:17500,e:75000,f:100000},{range:'+/-(5.00-6.75)',a:25000,b:40000,c:35000,d:20000,e:90000,f:125000},{range:'+/-(7.00-10.00)',a:35000,b:50000,c:40000,d:30000,e:110000,f:150000},{range:'+/-(10.00-15.00)',a:60000,b:75000,c:60000,d:40000,e:125000,f:175000},{section:'CYLINDER (SV)'},{range:'+/-(0.00-2.25)',a:17500,b:35000,c:30000,d:17500,e:65000,f:85000},{range:'+/-(2.50-3.75)',a:22500,b:45000,c:40000,d:22500,e:75000,f:100000},{range:'+/-(4.00-6.00)',a:25000,b:60000,c:50000,d:25000,e:100000,f:125000},{section:'BIFOCAL'},{range:'Sphere',a:35000,b:45000,c:null,d:null,e:null,f:null},{range:'Cylinder',a:50000,b:75000,c:null,d:null,e:null,f:null},{section:'PROGRESSIVE'},{range:'Sphere',a:null,b:100000,c:75000,d:null,e:125000,f:150000},{range:'Cylinder',a:null,b:115000,c:110000,d:null,e:150000,f:175000}];
+const LR={'Single Vision':['Plano 0.00','+/-(0.25-2.00)','+/-(2.50-3.75)','+/-(4.00-4.75)','+/-(5.00-6.75)','+/-(7.00-10.00)','+/-(10.00-15.00)'],'Cylinder (SV)':['+/-(0.00-2.25)','+/-(2.50-3.75)','+/-(4.00-6.00)'],'Bifocal':['Sphere','Cylinder'],'Progressive':['Sphere','Cylinder'],'Reading Glass':['Standard']};
+const READING_GLASS_PRICE=15000;
+const MT=['Glass (PG X)','Plastic (Transition)','CR Mar','CR White','CR (Blue Cut)','Polycarbonate'];
+const PK=['a','b','c','d','e','f'];
+const RP={admin:['dashboard','patients','sales','sales-history','prescriptions','lenses','frames','accessories','repairs','expenditure','reports','users','prices'],doctor:['dashboard','patients','prices'],receptionist:['dashboard','patients','sales','sales-history','prescriptions','expenditure','prices'],optician:['dashboard','prescriptions','repairs']};
+const PL={dashboard:'Dashboard',patients:'Patients',sales:'New Sale','sales-history':'Sales',prescriptions:'Prescriptions',lenses:'Lenses',frames:'Frames',accessories:'Accessories',repairs:'Repairs',expenditure:'Expenditure',reports:'Reports',users:'Users',prices:'Prices'};
+
+/* utilities */
+const $=id=>document.getElementById(id);
+const v=id=>{const e=$(id);return e?e.value.trim():'';};
+const set=(id,val)=>{const e=$(id);if(e)e.value=val||'';};
+const fmt=n=>Number(n||0).toLocaleString('en-TZ');
+const tdISO=()=>new Date().toISOString().split('T')[0];
+const fdt=iso=>{if(!iso)return '—';try{return new Date(iso).toLocaleDateString('en-GB');}catch{return iso;}};
+const age=db=>{if(!db)return '—';try{return Math.floor((Date.now()-new Date(db).getTime())/(365.25*864e5));}catch{return '—';}};
+const tst=(m,t='')=>{const x=$('tst');x.className=t;x.textContent=m;x.classList.add('show');setTimeout(()=>x.classList.remove('show'),3000);};
+const sb=q=>{q=Number(q);return q===0?'<span class="bd b-d">Out</span>':q<=3?'<span class="bd b-w">Low</span>':'<span class="bd b-ok">OK</span>';};
+const rb=r=>{const m={admin:'b-a',doctor:'b-doc',receptionist:'b-r',optician:'b-g'};return `<span class="bd ${m[r]||'b-i'}">${r}</span>`;};
+const om=id=>$(id).classList.add('show');
+const cm=id=>{$(id).classList.remove('show');const m={'mo-pt':'pt','mo-ex':'ex','mo-ln':'ln','mo-fr':'fr','mo-ac':'ac','mo-rp':'rp','mo-ep':'ep'};if(m[id])ed[m[id]]=null;};
+const esc=s=>String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+document.querySelectorAll('.mo').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)cm(m.id);}));
+
+/* config / firebase init */
+const ldCfg=()=>{try{return JSON.parse(localStorage.getItem('adif_fb'));}catch{return null;}};
+function saveCfg(){
+  const a=v('cfg-api'),ad=v('cfg-auth'),pj=v('cfg-proj'),ai=v('cfg-app');
+  if(!a||!ad||!pj||!ai){$('cfg-er').textContent='API Key, Auth Domain, Project ID and App ID are required.';return;}
+  const c={apiKey:a,authDomain:ad,projectId:pj,storageBucket:v('cfg-bk'),messagingSenderId:v('cfg-ms'),appId:ai};
+  localStorage.setItem('adif_fb',JSON.stringify(c));
+  initFB(c);
+}
+function initFB(c){
+  try{
+    if(!firebase.apps.length)firebase.initializeApp(c);
+    db=firebase.firestore();auth=firebase.auth();
+    $('ov-setup').classList.remove('show');
+    auth.onAuthStateChanged(onAC);
+  }catch(e){$('cfg-er').textContent='Firebase init error: '+e.message;}
+}
+function reCfg(){
+  const c=ldCfg();
+  if(c){set('cfg-api',c.apiKey);set('cfg-auth',c.authDomain);set('cfg-proj',c.projectId);set('cfg-bk',c.storageBucket);set('cfg-ms',c.messagingSenderId);set('cfg-app',c.appId);}
+  $('ov-setup').classList.add('show');$('ov-auth').classList.remove('show');$('app').style.display='none';
+}
+
+/* auth */
+async function onAC(u){
+  if(u){
+    try{
+      const d=await db.collection('users').doc(u.uid).get();
+      if(d.exists){me={uid:u.uid,...d.data()};role=me.role;}
+      else{me={uid:u.uid,email:u.email,name:u.displayName||u.email,role:'receptionist'};role='receptionist';}
+      $('ov-auth').classList.remove('show');shApp();
+    }catch(e){tst('Error: '+e.message,'dg');}
+  }else{
+    me=null;role=null;$('app').style.display='none';$('ov-auth').classList.add('show');
+  }
+}
+function atb(t){
+  document.querySelectorAll('#ov-auth .tabs button').forEach(b=>b.classList.remove('act'));
+  document.querySelectorAll('#ov-auth .tabs button')[t==='lg'?0:1].classList.add('act');
+  $('lg-form').style.display=t==='lg'?'block':'none';
+  $('rg-form').style.display=t==='rg'?'block':'none';
+}
+async function lgIn(){
+  const em=v('l-em'),pw=v('l-pw'),er=$('l-er');er.textContent='';
+  if(!em||!pw){er.textContent='Email and password required.';return;}
+  try{await auth.signInWithEmailAndPassword(em,pw);}catch(e){er.textContent=fE(e);}
+}
+async function rgUp(){
+  const nm=v('r-nm'),em=v('r-em'),pw=v('r-pw'),cd=v('r-cd').toUpperCase(),er=$('r-er');er.textContent='';
+  if(!nm||!em||!pw){er.textContent='All fields required.';return;}
+  if(pw.length<6){er.textContent='Password must be at least 6 characters.';return;}
+  let rl='receptionist';
+  try{
+    const us=await db.collection('users').limit(1).get();
+    if(us.empty)rl='admin';
+    else if(cd===A_CD)rl='admin';
+    else if(cd===D_CD)rl='doctor';
+    const{user}=await auth.createUserWithEmailAndPassword(em,pw);
+    await db.collection('users').doc(user.uid).set({name:nm,email:em,role:rl,createdAt:firebase.firestore.FieldValue.serverTimestamp()});
+    tst('Welcome, '+nm+'! Role: '+rl,'sc');
+  }catch(e){er.textContent=fE(e);}
+}
+function fE(e){
+  const m=e.message||'';
+  if(m.includes('email-already-in-use'))return 'Email already registered.';
+  if(m.includes('invalid-email'))return 'Invalid email format.';
+  if(m.includes('wrong-password')||m.includes('invalid-credential')||m.includes('invalid-login-credentials'))return 'Invalid email or password.';
+  if(m.includes('user-not-found'))return 'No account with this email.';
+  if(m.includes('too-many-requests'))return 'Too many attempts. Try again later.';
+  if(m.includes('network'))return 'Network error. Check your connection.';
+  if(m.includes('permission-denied')||m.includes('insufficient permissions'))return 'Permission denied. Check Firestore Security Rules.';
+  return e.message;
+}
+async function lgOut(){try{await auth.signOut();tst('Signed out.','sc');}catch(e){tst(e.message,'dg');}}
+
+/* navigation */
+function shApp(){
+  $('app').style.display='block';
+  $('h-un').textContent=me.name;$('h-ur').textContent=me.role;
+  const ps=RP[role]||[];
+  $('nav-main').innerHTML=ps.map(p=>`<button onclick="sp('${p}')" id="nv-${p}">${PL[p]}</button>`).join('');
+  sp('dashboard');
+}
+function sp(id){
+  const al=RP[role]||[];
+  if(!al.includes(id)&&id!=='patient-detail'){tst('Access denied.','dg');return;}
+  document.querySelectorAll('.pg').forEach(p=>p.classList.remove('act'));
+  document.querySelectorAll('#nav-main button').forEach(b=>b.classList.remove('act'));
+  const pg=$('p-'+id);if(pg)pg.classList.add('act');
+  const bt=$('nv-'+id);if(bt)bt.classList.add('act');
+  const ld={dashboard:rDh,patients:rPats,sales:popSale,'sales-history':rSH,prescriptions:rPx,lenses:rLn,frames:rFr,accessories:rAc,repairs:rRp,expenditure:rEp,reports:initRp,users:rUs,prices:rPL};
+  if(ld[id])ld[id]();
+}
+
+/* DASHBOARD */
+async function rDh(){
+  $('dh-st').innerHTML='<div class="ld"><div class="sp"></div><br>Loading...</div>';
+  $('dh-g').innerHTML='';
+  try{
+    const ps=await db.collection('patients').get();
+    const pats=ps.docs.map(d=>({id:d.id,...d.data()}));
+    const td=tdISO();
+    let h=`<div class="sx"><div class="sl">Total Patients</div><div class="sv">${pats.length}</div><div class="ss">Registered</div></div>`;
+    let g='';
+
+    if(['admin','receptionist'].includes(role)){
+      const[ss,rs,es]=await Promise.all([db.collection('sales').get(),db.collection('repairs').get(),db.collection('expenditures').get()]);
+      const sales=ss.docs.map(d=>({id:d.id,...d.data()}));
+      const reps=rs.docs.map(d=>({id:d.id,...d.data()}));
+      const exps=es.docs.map(d=>({id:d.id,...d.data()}));
+      const tR=sales.reduce((s,x)=>s+Number(x.total||0),0);
+      const tdR=sales.filter(s=>s.dateISO===td).reduce((t,x)=>t+Number(x.total||0),0);
+      const tE=exps.reduce((s,x)=>s+Number(x.amount||0),0);
+      const np=tR-tE;
+      const pn=reps.filter(r=>['Pending','In Progress','On the Process'].includes(r.status)).length;
+      h+=`<div class="sx"><div class="sl">Today's Revenue</div><div class="sv">${fmt(tdR)}</div><div class="ss">TZS today</div></div>
+        <div class="sx"><div class="sl">Total Sales</div><div class="sv">${sales.length}</div><div class="ss">Transactions</div></div>
+        <div class="sx" style="${pn>0?'border-color:var(--or)':''}"><div class="sl">Pending Repairs</div><div class="sv" style="color:${pn>0?'var(--or)':'var(--g)'}">${pn}</div><div class="ss">Active</div></div>`;
+      if(role==='admin'){
+        h+=`<div class="sx"><div class="sl">Total Revenue</div><div class="sv">${fmt(tR)}</div><div class="ss">TZS all-time</div></div>
+          <div class="sx"><div class="sl">Total Expenses</div><div class="sv" style="color:#e87060">${fmt(tE)}</div><div class="ss">TZS</div></div>
+          <div class="sx" style="border-color:${np>=0?'var(--gr)':'var(--rd)'}"><div class="sl">Net Profit/Loss</div><div class="sv" style="color:${np>=0?'var(--gr)':'#e87060'}">${fmt(np)}</div><div class="ss">Revenue − Expenses</div></div>`;
+      }
+      const rc=[...sales].sort((a,b)=>(b.dateISO||'').localeCompare(a.dateISO||'')).slice(0,5);
+      g+=`<div class="c"><div class="ch"><span class="ct">Recent Sales</span></div><div class="cb">${rc.length?`<table><thead><tr><th>Date</th><th>Customer</th><th>Total</th><th>Method</th></tr></thead><tbody>${rc.map(s=>`<tr><td>${fdt(s.dateISO)}</td><td>${esc(s.name)}</td><td>${fmt(s.total)}</td><td><span class="bd b-i">${esc(s.method)}</span></td></tr>`).join('')}</tbody></table>`:'<p style="color:var(--m);font-size:.82rem">No sales yet.</p>'}</div></div>`;
+      const pr=reps.filter(r=>['Pending','In Progress','On the Process'].includes(r.status)).slice(0,5);
+      g+=`<div class="c"><div class="ch"><span class="ct">Pending Repairs</span></div><div class="cb">${pr.length?pr.map(r=>`<div style="padding:8px 0;border-bottom:1px solid var(--bd2);font-size:.82rem"><b>${esc(r.name)}</b> — ${esc(r.type)}<br><span style="color:var(--m);font-size:.72rem">TZS ${fmt(r.cost)} · <span class="bd b-w">${r.status}</span></span></div>`).join(''):'<p style="color:var(--m);font-size:.82rem">No pending repairs.</p>'}</div></div>`;
+
+      /* Change 10: Monthly breakdown (revenue, expenses, net) — last 12 months with data */
+      const mAgg={};
+      sales.forEach(s=>{const m=(s.dateISO||'').slice(0,7);if(m){mAgg[m]=mAgg[m]||{rev:0,exp:0,cnt:0};mAgg[m].rev+=Number(s.total||0);mAgg[m].cnt++;}});
+      exps.forEach(e=>{const m=(e.date||'').slice(0,7);if(m){mAgg[m]=mAgg[m]||{rev:0,exp:0,cnt:0};mAgg[m].exp+=Number(e.amount||0);}});
+      const months=Object.keys(mAgg).sort((a,b)=>b.localeCompare(a)).slice(0,12);
+      const mLabel=m=>{try{return new Date(m+'-01').toLocaleDateString('en-GB',{month:'short',year:'numeric'});}catch{return m;}};
+      const monthRows=months.map(m=>{const d=mAgg[m];const net=d.rev-d.exp;return `<tr>
+        <td><b>${mLabel(m)}</b></td>
+        <td>${d.cnt}</td>
+        <td style="color:var(--g)">${fmt(d.rev)}</td>
+        ${role==='admin'?`<td style="color:#e87060">${fmt(d.exp)}</td><td style="color:${net>=0?'var(--gr)':'#e87060'}"><b>${net<0?'−':''}${fmt(Math.abs(net))}</b></td>`:''}
+      </tr>`}).join('');
+      g+=`<div class="c" style="grid-column:1/-1"><div class="ch"><span class="ct">📅 Monthly Breakdown</span><span style="color:var(--m);font-size:.74rem">Overall + per month</span></div><div class="cb"><div class="tw"><table>
+        <thead><tr><th>Month</th><th>Sales</th><th>Revenue (TZS)</th>${role==='admin'?'<th>Expenses (TZS)</th><th>Net (TZS)</th>':''}</tr></thead>
+        <tbody>${months.length?monthRows:`<tr><td colspan="${role==='admin'?5:3}" style="text-align:center;color:var(--m);padding:14px">No monthly data yet.</td></tr>`}
+        <tr style="border-top:2px solid var(--bd)"><td><b>OVERALL</b></td><td><b>${sales.length}</b></td><td style="color:var(--g)"><b>${fmt(tR)}</b></td>${role==='admin'?`<td style="color:#e87060"><b>${fmt(tE)}</b></td><td style="color:${np>=0?'var(--gr)':'#e87060'}"><b>${np<0?'−':''}${fmt(Math.abs(np))}</b></td>`:''}</tr>
+        </tbody></table></div></div></div>`;
+    }
+
+    if(role==='doctor'){
+      const xs=await db.collection('examinations').get();
+      const ex=xs.docs.map(d=>({id:d.id,...d.data()}));
+      const tdEx=ex.filter(e=>e.date===td);
+      const my=ex.filter(e=>e.doctorId===me.uid);
+      const up=ex.filter(e=>e.nextAppt&&e.nextAppt>=td).sort((a,b)=>a.nextAppt.localeCompare(b.nextAppt));
+      h+=`<div class="sx"><div class="sl">My Examinations</div><div class="sv">${my.length}</div><div class="ss">All time</div></div>
+        <div class="sx"><div class="sl">Today's Exams</div><div class="sv">${tdEx.length}</div><div class="ss">${fdt(td)}</div></div>
+        <div class="sx"><div class="sl">Upcoming Reviews</div><div class="sv">${up.length}</div><div class="ss">Follow-ups</div></div>`;
+      g+=`<div class="c"><div class="ch"><span class="ct">Upcoming Appointments</span></div><div class="cb">${up.slice(0,6).length?up.slice(0,6).map(e=>{const p=pats.find(x=>x.id===e.patientId);return `<div style="padding:8px 0;border-bottom:1px solid var(--bd2);font-size:.82rem;cursor:pointer" onclick="vP('${e.patientId}')"><b>${fdt(e.nextAppt)}</b> — ${p?esc(p.name):'(deleted)'}<br><span style="color:var(--m);font-size:.72rem">${esc(e.dx1||'—')}</span></div>`}).join(''):'<p style="color:var(--m);font-size:.82rem">No upcoming appointments.</p>'}</div></div>`;
+      const rEx=[...ex].sort((a,b)=>(b.date||'').localeCompare(a.date||'')).slice(0,6);
+      g+=`<div class="c"><div class="ch"><span class="ct">Recent Examinations</span></div><div class="cb">${rEx.length?rEx.map(e=>{const p=pats.find(x=>x.id===e.patientId);return `<div style="padding:8px 0;border-bottom:1px solid var(--bd2);font-size:.82rem;cursor:pointer" onclick="vP('${e.patientId}')"><b>${p?esc(p.name):'(deleted)'}</b> — ${fdt(e.date)}<br><span style="color:var(--m);font-size:.72rem">${esc(e.dx1||'No diagnosis')}</span></div>`}).join(''):'<p style="color:var(--m);font-size:.82rem">No examinations yet.</p>'}</div></div>`;
+    }
+    if(role==='optician'){
+      const rs=await db.collection('repairs').get();
+      const reps=rs.docs.map(d=>({id:d.id,...d.data()}));
+      const pending=reps.filter(r=>['Pending','On the Process','In Progress'].includes(r.status));
+      const done=reps.filter(r=>['Glasses Done','Completed'].includes(r.status));
+      h=`<div class="sx" style="border-color:var(--or)"><div class="sl">To Work On</div><div class="sv" style="color:var(--or)">${pending.length}</div><div class="ss">Pending / In process</div></div>
+        <div class="sx" style="border-color:var(--gr)"><div class="sl">Glasses Done</div><div class="sv" style="color:var(--gr)">${done.length}</div><div class="ss">Ready / Completed</div></div>
+        <div class="sx"><div class="sl">Total Jobs</div><div class="sv">${reps.length}</div><div class="ss">All repairs</div></div>`;
+      const q=[...pending].sort((a,b)=>(a.dateISO||'').localeCompare(b.dateISO||''));
+      g+=`<div class="c"><div class="ch"><span class="ct">Work Queue</span></div><div class="cb">${q.length?q.slice(0,12).map(r=>`<div style="padding:8px 0;border-bottom:1px solid var(--bd2);font-size:.82rem"><b>${esc(r.name)}</b> — ${esc(r.type)}<br><span style="color:var(--m);font-size:.72rem">${fdt(r.dateISO)} · <span class="bd ${r.status==='On the Process'||r.status==='In Progress'?'b-w':'b-d'}">${esc(r.status)}</span></span></div>`).join(''):'<p style="color:var(--m);font-size:.82rem">No pending jobs.</p>'}</div></div>`;
+    }
+
+    $('dh-st').innerHTML=h;$('dh-g').innerHTML=g;
+  }catch(e){$('dh-st').innerHTML=`<div class="al al-w">Error: ${e.message}</div>`;}
+}
+
+/* PATIENTS */
+function opPt(p){
+  ed.pt=p?p.id:null;
+  $('pt-mt').textContent=p?'Edit Patient':'New Patient';
+  if(p){set('pm-nm',p.name);set('pm-db',p.dob);set('pm-gn',p.gender||'Male');set('pm-ph',p.phone);set('pm-em',p.email);set('pm-oc',p.occupation);set('pm-ad',p.address);set('pm-en',p.ecName);set('pm-ep',p.ecPhone);$('pm-gn').value=p.gender||'Male';}
+  else{['pm-nm','pm-db','pm-ph','pm-em','pm-oc','pm-ad','pm-en','pm-ep'].forEach(i=>set(i,''));$('pm-gn').value='Male';}
+  om('mo-pt');
+}
+async function svPt(){
+  const nm=v('pm-nm'),ph=v('pm-ph');
+  if(!nm||!ph){tst('Name and phone required.','dg');return;}
+  const d={name:nm,phone:ph,dob:v('pm-db'),gender:$('pm-gn').value,email:v('pm-em'),occupation:v('pm-oc'),address:v('pm-ad'),ecName:v('pm-en'),ecPhone:v('pm-ep')};
+  try{
+    if(ed.pt){await db.collection('patients').doc(ed.pt).update(d);tst('Updated.','sc');}
+    else{
+      d.regNo=await nextRegNo();
+      d.createdAt=firebase.firestore.FieldValue.serverTimestamp();d.createdBy=me.uid;
+      await db.collection('patients').add(d);tst('Added · '+d.regNo,'sc');
+    }
+    cm('mo-pt');rPats();
+  }catch(e){tst(e.message,'dg');}
+}
+/* Change 3: atomic sequential registration number generator -> ADIF-0001, ADIF-0002 ... */
+async function nextRegNo(){
+  const ref=db.collection('counters').doc('patients');
+  const n=await db.runTransaction(async tx=>{
+    const snap=await tx.get(ref);
+    let cur=snap.exists?(Number(snap.data().count)||0):0;
+    cur+=1;
+    tx.set(ref,{count:cur},{merge:true});
+    return cur;
+  });
+  return 'ADIF-'+String(n).padStart(4,'0');
+}
+async function rPats(){
+  $('pt-list').innerHTML='<div class="ld"><div class="sp"></div></div>';
+  try{
+    const s=await db.collection('patients').get();
+    allP=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(a.name||'').localeCompare(b.name||''));
+    const q=v('ps-q').toLowerCase(),gn=v('ps-gn');
+    const f=allP.filter(p=>(!q||((p.name||'')+(p.phone||'')+(p.address||'')).toLowerCase().includes(q))&&(!gn||p.gender===gn));
+    if(!f.length){$('pt-list').innerHTML='<p style="color:var(--m);font-size:.85rem;padding:14px">No patients found.</p>';return;}
+    $('pt-list').innerHTML=f.map(p=>`<div class="pcd" onclick="vP('${p.id}')">
+      <div class="pcn">${esc(p.name)}</div>
+      <div class="pcm">📞 ${esc(p.phone)}</div>
+      <div class="pcm" style="margin-top:3px">👤 ${esc(p.gender||'—')} · Age ${age(p.dob)}</div>
+      <div class="pcm" style="margin-top:3px">📍 ${esc(p.address||'—')}</div>
+    </div>`).join('');
+  }catch(e){$('pt-list').innerHTML=`<div class="al al-w">Error: ${e.message}</div>`;}
+}
+
+async function vP(id){
+  try{
+    const s=await db.collection('patients').doc(id).get();
+    if(!s.exists)return;
+    const p={id:s.id,...s.data()};cp=p;
+    $('pd-nm').innerHTML=`<small>Patient File</small>${esc(p.name)}`;
+    $('pd-info').innerHTML=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:.82rem">
+      <div><span style="color:var(--m)">Phone</span><br><b>${esc(p.phone)}</b></div>
+      <div><span style="color:var(--m)">Gender</span><br>${esc(p.gender||'—')}</div>
+      <div><span style="color:var(--m)">DOB / Age</span><br>${fdt(p.dob)} · ${age(p.dob)} yrs</div>
+      <div><span style="color:var(--m)">Occupation</span><br>${esc(p.occupation||'—')}</div>
+      <div style="grid-column:1/-1"><span style="color:var(--m)">Address</span><br>${esc(p.address||'—')}</div>
+      <div><span style="color:var(--m)">Email</span><br>${esc(p.email||'—')}</div>
+      <div><span style="color:var(--m)">Emergency</span><br>${esc(p.ecName||'—')} ${p.ecPhone?'· '+esc(p.ecPhone):''}</div>
+    </div>`;
+    const cl=['admin','doctor'].includes(role);
+    $('pd-cs').style.display=cl?'block':'none';
+    $('bt-nx-em').style.display=cl?'inline-flex':'none';
+    $('pd-rh').style.display=role==='receptionist'?'block':'none';
+    $('bt-ed-pt').style.display='inline-flex';
+    await ldRx(p);
+    if(cl)await ldEx(id);
+    sp('patient-detail');
+  }catch(e){tst(e.message,'dg');}
+}
+function edCp(){if(cp)opPt(cp);}
+
+async function ldRx(p){
+  try{
+    const xs=await db.collection('examinations').where('patientId','==',p.id).get();
+    const ex=xs.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+    const lt=ex.find(e=>e.dx1||e.subRsph||e.specRx);
+    if(lt){
+      $('pd-rx').innerHTML=`<div style="font-size:.82rem;color:var(--o);line-height:1.7">
+        <div style="color:var(--m);font-size:.7rem;margin-bottom:8px">From examination · ${fdt(lt.date)} · Dr. ${esc(lt.doctor||'—')}</div>
+        ${lt.dx1?`<div><b style="color:var(--g)">Diagnosis:</b> ${esc(lt.dx1)}${lt.dx2?' / '+esc(lt.dx2):''}</div>`:''}
+        ${lt.subRsph||lt.subLsph?`<div style="margin-top:5px"><b style="color:var(--g)">Spectacle Rx:</b></div>
+          <div style="margin-left:12px">R: Sph ${esc(lt.subRsph||'—')} Cyl ${esc(lt.subRcyl||'—')} Ax ${esc(lt.subRaxis||'—')}${lt.subRadd?' Add '+esc(lt.subRadd):''}</div>
+          <div style="margin-left:12px">L: Sph ${esc(lt.subLsph||'—')} Cyl ${esc(lt.subLcyl||'—')} Ax ${esc(lt.subLaxis||'—')}${lt.subLadd?' Add '+esc(lt.subLadd):''}</div>
+          <div style="margin-left:12px">PD: ${esc(lt.pd||'—')}</div>`:''}
+        ${lt.treatment?`<div style="margin-top:5px"><b style="color:var(--g)">Treatment:</b> ${esc(lt.treatment)}</div>`:''}
+      </div>`;return;
+    }
+    const ss=await db.collection('sales').where('phone','==',p.phone).get();
+    const sl=ss.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.dateISO||'').localeCompare(a.dateISO||''));
+    const lr=sl.find(s=>s.leftEye||s.rightEye);
+    if(lr){
+      $('pd-rx').innerHTML=`<div style="font-size:.82rem;color:var(--o);line-height:1.7">
+        <div style="color:var(--m);font-size:.7rem;margin-bottom:8px">From last sale · ${fdt(lr.dateISO)}</div>
+        ${lr.rightEye?`<div><b>R:</b> ${esc(lr.rightEye)}</div>`:''}
+        ${lr.leftEye?`<div><b>L:</b> ${esc(lr.leftEye)}</div>`:''}
+        ${lr.pd?`<div><b>PD:</b> ${esc(lr.pd)}</div>`:''}
+        ${lr.addPower?`<div><b>Add:</b> ${esc(lr.addPower)}</div>`:''}
+      </div>`;
+    }else{$('pd-rx').innerHTML='<p style="color:var(--m);font-size:.82rem">No prescription on record yet.</p>';}
+  }catch(e){$('pd-rx').innerHTML='<p style="color:var(--m);font-size:.82rem">—</p>';}
+}
+
+async function ldEx(pid){
+  $('pd-ex').innerHTML='<div class="ld"><div class="sp"></div></div>';
+  try{
+    const s=await db.collection('examinations').where('patientId','==',pid).get();
+    const ex=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+    if(!ex.length){$('pd-ex').innerHTML='<p style="color:var(--m);font-size:.85rem">No clinical examinations recorded yet.</p>';return;}
+    $('pd-ex').innerHTML=ex.map(e=>`<div class="c" style="margin-bottom:11px">
+      <div class="ch" style="cursor:pointer" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'">
+        <span class="ct">📋 ${fdt(e.date)} · ${esc(e.chiefComplaint||'—')}</span>
+        <span style="color:var(--m);font-size:.72rem">${esc(e.doctor||'')} · ▼ click to expand</span>
+      </div>
+      <div style="display:none">
+      <div class="cb">
+        ${(e.chiefComplaint||e.hpi)?`<div class="cs"><div class="cst">Case History</div>
+          <div style="font-size:.8rem;line-height:1.7;color:var(--o)">
+          ${e.chiefComplaint?`<div><b>Chief Complaint:</b> ${esc(e.chiefComplaint)}</div>`:''}
+          ${e.hpi?`<div><b>HPI:</b> ${esc(e.hpi)}</div>`:''}
+          ${e.poh?`<div><b>Past Ocular Hx:</b> ${esc(e.poh)}</div>`:''}
+          ${e.pmh?`<div><b>Past Medical Hx:</b> ${esc(e.pmh)}</div>`:''}
+          ${e.fh?`<div><b>Family Hx:</b> ${esc(e.fh)}</div>`:''}
+          ${e.allergies?`<div><b>Allergies:</b> ${esc(e.allergies)}</div>`:''}
+          ${e.meds?`<div><b>Current Meds:</b> ${esc(e.meds)}</div>`:''}
+          </div></div>`:''}
+        ${(e.vaRod||e.subRsph)?`<div class="cs"><div class="cst">Refraction &amp; Visual Acuity</div>
+          <div style="font-size:.78rem;color:var(--o);display:grid;grid-template-columns:1fr 1fr;gap:6px">
+          ${e.vaRod?`<div><b>VA R:</b> Dist ${esc(e.vaRod)} / Aided ${esc(e.vaRad||'—')} / Near ${esc(e.vaRn||'—')}</div>`:''}
+          ${e.vaLod?`<div><b>VA L:</b> Dist ${esc(e.vaLod)} / Aided ${esc(e.vaLad||'—')} / Near ${esc(e.vaLn||'—')}</div>`:''}
+          ${e.subRsph?`<div><b>Final Rx R:</b> ${esc(e.subRsph)} / ${esc(e.subRcyl||'—')} x ${esc(e.subRaxis||'—')}${e.subRadd?' Add '+esc(e.subRadd):''}</div>`:''}
+          ${e.subLsph?`<div><b>Final Rx L:</b> ${esc(e.subLsph)} / ${esc(e.subLcyl||'—')} x ${esc(e.subLaxis||'—')}${e.subLadd?' Add '+esc(e.subLadd):''}</div>`:''}
+          ${e.pd?`<div><b>PD:</b> ${esc(e.pd)}</div>`:''}
+          ${e.cover?`<div><b>Cover:</b> ${esc(e.cover)} · <b>EOM:</b> ${esc(e.eom||'—')}</div>`:''}
+          </div></div>`:''}
+        ${(e.iopR||e.corneaR)?`<div class="cs"><div class="cst">Anterior Segment / IOP</div>
+          <div style="font-size:.78rem;color:var(--o);line-height:1.6">
+          ${e.iopR?`<div><b>IOP:</b> R ${esc(e.iopR)} mmHg · L ${esc(e.iopL||'—')} mmHg (${esc(e.iopMethod||'—')})</div>`:''}
+          ${e.corneaR?`<div><b>Cornea:</b> R: ${esc(e.corneaR)} · L: ${esc(e.corneaL||'—')}</div>`:''}
+          ${e.lensR?`<div><b>Lens:</b> R: ${esc(e.lensR)} · L: ${esc(e.lensL||'—')}</div>`:''}
+          ${e.acR?`<div><b>AC:</b> R: ${esc(e.acR)} · L: ${esc(e.acL||'—')}</div>`:''}
+          ${e.tearFilm?`<div><b>Tear Film:</b> ${esc(e.tearFilm)}</div>`:''}
+          </div></div>`:''}
+        ${(e.discR||e.macR)?`<div class="cs"><div class="cst">Posterior Segment / Fundus</div>
+          <div style="font-size:.78rem;color:var(--o);line-height:1.6">
+          ${e.discR?`<div><b>Optic Disc:</b> R: ${esc(e.discR)} · L: ${esc(e.discL||'—')}</div>`:''}
+          ${e.macR?`<div><b>Macula:</b> R: ${esc(e.macR)} · L: ${esc(e.macL||'—')}</div>`:''}
+          ${e.vessR?`<div><b>Vessels:</b> R: ${esc(e.vessR)} · L: ${esc(e.vessL||'—')}</div>`:''}
+          ${e.investigations?`<div><b>Other Investigations:</b> ${esc(e.investigations)}</div>`:''}
+          </div></div>`:''}
+        ${e.dx1?`<div class="cs" style="border-color:var(--g)"><div class="cst">Diagnosis &amp; Management</div>
+          <div style="font-size:.82rem;color:var(--o);line-height:1.7">
+          <div><b style="color:var(--g2)">Diagnosis:</b> ${esc(e.dx1)}${e.dx2?' / '+esc(e.dx2):''}</div>
+          ${e.treatment?`<div><b>Treatment:</b> ${esc(e.treatment)}</div>`:''}
+          ${e.surgical?`<div><b>Surgical:</b> ${esc(e.surgical)}</div>`:''}
+          ${e.specRx?`<div><b>Spectacle Rx:</b> ${esc(e.specRx)}</div>`:''}
+          ${e.advice?`<div><b>Advice:</b> ${esc(e.advice)}</div>`:''}
+          ${e.referral?`<div><b>Referral:</b> ${esc(e.referral)}</div>`:''}
+          ${e.nextAppt?`<div><b>Next Appt:</b> ${fdt(e.nextAppt)}</div>`:''}
+          ${e.notes?`<div><b>Notes:</b> ${esc(e.notes)}</div>`:''}
+          </div></div>`:''}
+      </div>
+      ${(role==='admin'||role==='doctor')?`<div style="padding:8px 16px;border-top:1px solid var(--bd)"><button class="ab d" onclick="dlEx('${e.id}')">✕ Delete Record</button></div>`:''}
+      </div></div>`).join('');
+  }catch(e){$('pd-ex').innerHTML=`<div class="al al-w">Error: ${e.message}</div>`;}
+}
+
+/* EXAMINATIONS */
+function opEx(){
+  if(!['admin','doctor'].includes(role)){tst('Only doctors can create examinations.','dg');return;}
+  if(!cp){tst('Select a patient first.','dg');return;}
+  $('ex-mt').textContent='New Eye Examination — '+cp.name;
+  set('x-dt',tdISO());set('x-dr',me.name);
+  ['x-cc','x-hp','x-poh','x-pmh','x-fh','x-md','x-al','x-lf','x-vrod','x-vrph','x-vrad','x-vrn','x-vlod','x-vlph','x-vlad','x-vln','x-orsph','x-orcyl','x-orax','x-olsph','x-olcyl','x-olax','x-srsph','x-srcyl','x-srax','x-srad','x-slsph','x-slcyl','x-slax','x-slad','x-pd','x-bcr','x-bcl','x-cv','x-eom','x-pp','x-cl','x-st','x-npc','x-ldr','x-ldl','x-cjr','x-cjl','x-cnr','x-cnl','x-acr','x-acl','x-irr','x-irl','x-lnr','x-lnl','x-iop-r','x-iop-l','x-tf','x-dcr','x-dcl','x-mcr','x-mcl','x-vsr','x-vsl','x-prr','x-prl','x-vir','x-vil','x-iv','x-d1','x-d2','x-dx','x-tr','x-sg','x-sx','x-av','x-rf','x-na','x-nt'].forEach(i=>set(i,''));
+  exTb('hs');om('mo-ex');
+}
+function exTb(t){
+  document.querySelectorAll('.etb button').forEach(b=>b.classList.remove('act'));
+  document.querySelectorAll('.epn').forEach(p=>p.classList.remove('act'));
+  const i={hs:0,rf:1,an:2,po:3,mg:4}[t];
+  document.querySelectorAll('.etb button')[i].classList.add('act');
+  $('et-'+t).classList.add('act');
+}
+async function svEx(){
+  if(!['admin','doctor'].includes(role)){tst('Permission denied.','dg');return;}
+  const cc=v('x-cc'),dt=v('x-dt');
+  if(!cc){tst('Chief complaint required.','dg');exTb('hs');return;}
+  if(!dt){tst('Visit date required.','dg');return;}
+  if(!cp){tst('No patient.','dg');return;}
+  const dx1=v('x-d1');
+  if(!dx1){tst('Primary diagnosis required.','dg');exTb('mg');return;}
+  const d={
+    patientId:cp.id,patientName:cp.name,date:dt,doctor:v('x-dr'),doctorId:me.uid,visitType:$('x-vt').value,
+    chiefComplaint:cc,hpi:v('x-hp'),poh:v('x-poh'),pmh:v('x-pmh'),fh:v('x-fh'),meds:v('x-md'),allergies:v('x-al'),lifestyle:v('x-lf'),
+    vaRod:v('x-vrod'),vaRph:v('x-vrph'),vaRad:v('x-vrad'),vaRn:v('x-vrn'),vaLod:v('x-vlod'),vaLph:v('x-vlph'),vaLad:v('x-vlad'),vaLn:v('x-vln'),
+    objRsph:v('x-orsph'),objRcyl:v('x-orcyl'),objRaxis:v('x-orax'),objLsph:v('x-olsph'),objLcyl:v('x-olcyl'),objLaxis:v('x-olax'),
+    subRsph:v('x-srsph'),subRcyl:v('x-srcyl'),subRaxis:v('x-srax'),subRadd:v('x-srad'),subLsph:v('x-slsph'),subLcyl:v('x-slcyl'),subLaxis:v('x-slax'),subLadd:v('x-slad'),
+    pd:v('x-pd'),bcvaR:v('x-bcr'),bcvaL:v('x-bcl'),cover:v('x-cv'),eom:v('x-eom'),pupils:v('x-pp'),colorVision:v('x-cl'),stereo:v('x-st'),npc:v('x-npc'),
+    lidR:v('x-ldr'),lidL:v('x-ldl'),conjR:v('x-cjr'),conjL:v('x-cjl'),corneaR:v('x-cnr'),corneaL:v('x-cnl'),acR:v('x-acr'),acL:v('x-acl'),irisR:v('x-irr'),irisL:v('x-irl'),lensR:v('x-lnr'),lensL:v('x-lnl'),
+    iopR:v('x-iop-r'),iopL:v('x-iop-l'),iopMethod:$('x-iop-m').value,tearFilm:v('x-tf'),
+    fundusMethod:$('x-fm').value,dilation:$('x-dl').value,
+    discR:v('x-dcr'),discL:v('x-dcl'),macR:v('x-mcr'),macL:v('x-mcl'),vessR:v('x-vsr'),vessL:v('x-vsl'),periphR:v('x-prr'),periphL:v('x-prl'),vitR:v('x-vir'),vitL:v('x-vil'),investigations:v('x-iv'),
+    dx1,dx2:v('x-d2'),ddx:v('x-dx'),treatment:v('x-tr'),surgical:v('x-sg'),specRx:v('x-sx'),advice:v('x-av'),referral:v('x-rf'),nextAppt:v('x-na'),notes:v('x-nt'),
+    createdAt:firebase.firestore.FieldValue.serverTimestamp()
+  };
+  try{
+    await db.collection('examinations').add(d);
+    tst('Examination saved.','sc');cm('mo-ex');
+    await ldRx(cp);await ldEx(cp.id);
+  }catch(e){tst(e.message,'dg');}
+}
+async function dlEx(id){if(!confirm('Delete this clinical record?'))return;try{await db.collection('examinations').doc(id).delete();tst('Deleted.','sc');await ldEx(cp.id);await ldRx(cp);}catch(e){tst(e.message,'dg');}}
+
+/* SALES */
+async function popSale(){
+  edSaleId=null;sEditBanner(false);
+  try{
+    const[fs,as,ps]=await Promise.all([db.collection('frames').get(),db.collection('accessories').get(),db.collection('patients').get()]);
+    const fr=fs.docs.map(d=>({id:d.id,...d.data()})).filter(f=>Number(f.qty)>0);
+    const ac=as.docs.map(d=>({id:d.id,...d.data()})).filter(a=>Number(a.qty)>0);
+    const pt=ps.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(a.name||'').localeCompare(b.name||''));
+    allP=pt;
+    $('s-fr').innerHTML='<option value="">— No Frame / Own Frame —</option>'+fr.map(f=>`<option value="${f.id}" data-p="${f.price}">${esc(f.model)} (${esc(f.material||'—')}) — TZS ${fmt(f.price)}</option>`).join('');
+    $('s-ac').innerHTML='<option value="">— None —</option>'+ac.map(a=>`<option value="${a.id}" data-p="${a.sell}">${esc(a.name)} — TZS ${fmt(a.sell)}</option>`).join('');
+    $('s-pt').innerHTML='<option value="">— Walk-in —</option>'+pt.map(p=>`<option value="${p.id}">${p.regNo?'['+esc(p.regNo)+'] ':''}${esc(p.name)} · ${esc(p.phone)}</option>`).join('');
+    if($('s-dt')&&!v('s-dt'))set('s-dt',tdISO());
+  }catch(e){}
+}
+/* Change 3: lookup returning client by registration number, auto-fill + link */
+async function onSReg(){
+  const rg=v('s-reg');if(!rg)return;
+  let p=(allP||[]).find(x=>(x.regNo||'').toLowerCase()===rg.toLowerCase());
+  if(!p){
+    try{const qs=await db.collection('patients').where('regNo','==',rg).limit(1).get();if(!qs.empty){p={id:qs.docs[0].id,...qs.docs[0].data()};}}catch(e){}
+  }
+  if(p){
+    $('s-pt').value=p.id;
+    set('s-nm',p.name);set('s-ph',p.phone);set('s-ad',p.address||'');
+    await onSPt();
+    tst('Returning client: '+p.name,'sc');
+  }else{
+    tst('No client with reg '+rg,'dg');
+  }
+}
+async function onSPt(){
+  const id=v('s-pt');if(!id)return;
+  try{
+    const s=await db.collection('patients').doc(id).get();
+    if(s.exists){const p=s.data();set('s-nm',p.name);set('s-ph',p.phone);set('s-ad',p.address||'');set('s-reg',p.regNo||'');
+      const xs=await db.collection('examinations').where('patientId','==',id).get();
+      const ex=xs.docs.map(d=>d.data()).sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+      const lt=ex.find(e=>e.subRsph||e.subLsph);
+      if(lt){
+        set('s-re',`${lt.subRsph||''} / ${lt.subRcyl||''} x ${lt.subRaxis||''}`);
+        set('s-le',`${lt.subLsph||''} / ${lt.subLcyl||''} x ${lt.subLaxis||''}`);
+        set('s-pd',lt.pd||'');set('s-ap',lt.subRadd||lt.subLadd||'');
+        tst('Loaded patient prescription.','sc');
+      }
+    }
+  }catch(e){}
+}
+function onSFr(){const o=$('s-fr').options[$('s-fr').selectedIndex];set('s-frp',o&&o.dataset.p?o.dataset.p:'');cTo();}
+function onSAc(){const o=$('s-ac').options[$('s-ac').selectedIndex];set('s-acp',o&&o.dataset.p?o.dataset.p:'');cTo();}
+function uLR(){
+  const t=v('s-lt');
+  $('s-lr').innerHTML='<option value="">— Select —</option>'+(LR[t]||[]).map(r=>`<option>${r}</option>`).join('');
+  $('s-lm').innerHTML='<option value="">— Select —</option>';
+  set('s-lpe','');set('s-lp','');
+  if(t==='Reading Glass'){
+    /* Reading glass: fixed 15,000 per eye, no material/range needed */
+    $('s-lr').innerHTML='<option>Standard</option>';$('s-lr').value='Standard';
+    $('s-lm').innerHTML='<option>Reading Glass</option>';$('s-lm').value='Reading Glass';
+    set('s-lpe',READING_GLASS_PRICE);
+  }
+  cLens();
+}
+function uLM(){
+  if(v('s-lt')==='Reading Glass'){set('s-lpe',READING_GLASS_PRICE);cLens();return;}
+  $('s-lm').innerHTML='<option value="">— Select —</option>'+MT.map(m=>`<option>${m}</option>`).join('');
+  cTo();
+}
+function fLP(){
+  const t=v('s-lt'),r=v('s-lr'),m=v('s-lm');
+  if(t==='Reading Glass'){set('s-lpe',READING_GLASS_PRICE);cLens();return;}
+  if(!t||!r||!m){cLens();return;}
+  const k=PK[MT.indexOf(m)];
+  const ns=PD.filter(x=>!x.section);let rows=[];
+  if(t==='Single Vision')rows=ns.slice(0,7);
+  else if(t==='Cylinder (SV)')rows=ns.slice(7,10);
+  else if(t==='Bifocal')rows=ns.slice(10,12);
+  else if(t==='Progressive')rows=ns.slice(12,14);
+  const row=rows.find(x=>x.range===r);
+  set('s-lpe',row&&row[k]?row[k]:'');cLens();
+}
+/* compute lens total = per-eye * eyes */
+function cLens(){
+  const pe=Number(v('s-lpe'))||0;
+  const eyes=Number($('s-le-cnt')?.value)||2;
+  set('s-lp',pe?pe*eyes:'');
+  cTo();
+}
+function cTo(){
+  const fp=Number(v('s-frp'))||0,lp=Number(v('s-lp'))||0,ap=Number(v('s-acp'))||0,d=Number(v('s-ds'))||0;
+  const t=Math.max(0,fp+lp+ap-d);
+  $('sm-fr').textContent=fmt(fp+ap);$('sm-ln').textContent=fmt(lp);$('sm-tt').textContent=fmt(t);
+  cCh();
+}
+function cCh(){
+  const t=Number($('sm-tt').textContent.replace(/,/g,''))||0;
+  const p=Number(v('s-pd-pd'))||0;const c=p-t;
+  const e=$('s-ch');e.value=c>=0?`Change: TZS ${fmt(c)}`:`Balance: TZS ${fmt(Math.abs(c))}`;
+  e.style.color=c>=0?'var(--gr)':'var(--or)';
+}
+function clSale(){
+  ['s-nm','s-ph','s-ad','s-frp','s-lpe','s-lp','s-acp','s-ds','s-re','s-le','s-pd','s-ap','s-nt','s-pd-pd','s-ch','s-dt'].forEach(i=>set(i,''));
+  ['s-fr','s-ac','s-pt'].forEach(i=>{$(i).selectedIndex=0;});
+  set('s-lt','');$('s-lr').innerHTML='<option value="">— Select —</option>';$('s-lm').innerHTML='<option value="">— Select —</option>';
+  if($('s-le-cnt'))$('s-le-cnt').value='2';
+  if($('s-dt'))$('s-dt').value=tdISO();
+  ['sm-fr','sm-ln','sm-tt'].forEach(i=>$(i).textContent='0');
+  set('s-reg','');
+}
+async function svSale(){
+  const nm=v('s-nm'),ph=v('s-ph');
+  if(!nm||!ph){tst('Name and phone required.','dg');return;}
+  const dt=v('s-dt')||tdISO();
+  const t=Number($('sm-tt').textContent.replace(/,/g,''))||0;
+  const fSel=$('s-fr'),aSel=$('s-ac'),pSel=$('s-pt');
+  const pObj=(allP||[]).find(x=>x.id===pSel.value);
+  const s={dateISO:dt,patientId:pSel.value||null,regNo:v('s-reg')||(pObj?pObj.regNo:'')||'',name:nm,phone:ph,address:v('s-ad'),
+    frameId:fSel.value||null,frameLabel:fSel.options[fSel.selectedIndex]?.text||'',framePrice:Number(v('s-frp'))||0,
+    lensType:v('s-lt'),lensRange:v('s-lr'),lensMat:v('s-lm'),lensPricePerEye:Number(v('s-lpe'))||0,lensEyes:Number($('s-le-cnt')?.value)||2,lensPrice:Number(v('s-lp'))||0,
+    accLabel:aSel.options[aSel.selectedIndex]?.text||'',accPrice:Number(v('s-acp'))||0,
+    discount:Number(v('s-ds'))||0,total:t,paid:Number(v('s-pd-pd'))||0,method:$('s-mt').value,
+    rightEye:v('s-re'),leftEye:v('s-le'),pd:v('s-pd'),addPower:v('s-ap'),notes:v('s-nt'),
+    createdBy:me.uid,createdByName:me.name,createdAt:firebase.firestore.FieldValue.serverTimestamp()};
+  try{
+    if(edSaleId){
+      /* Edit mode: update only, do NOT touch stock */
+      await db.collection('sales').doc(edSaleId).update(s);
+      const eid=edSaleId;edSaleId=null;sEditBanner(false);
+      s.id=eid;lastSale=s;
+      clSale();tst('✓ Sale updated!','sc');rSH();shRcp(s);
+      return;
+    }
+    if(fSel.value){const fd=await db.collection('frames').doc(fSel.value).get();if(fd.exists&&fd.data().qty>0)await db.collection('frames').doc(fSel.value).update({qty:firebase.firestore.FieldValue.increment(-1)});}
+    if(aSel.value){const ad=await db.collection('accessories').doc(aSel.value).get();if(ad.exists&&ad.data().qty>0)await db.collection('accessories').doc(aSel.value).update({qty:firebase.firestore.FieldValue.increment(-1)});}
+    const ref=await db.collection('sales').add(s);s.id=ref.id;lastSale=s;
+    clSale();tst('✓ Sale saved!','sc');shRcp(s);
+  }catch(e){tst(e.message,'dg');}
+}
+function shRcp(s){
+  $('rcp-c').innerHTML=`<div class="rcp">
+    <h2>ADIF OPTICAL CENTRE</h2>
+    <div class="rs">Zanzibar, Tanzania</div>
+    <div class="rs">Receipt · ${fdt(s.dateISO)}</div>
+    <hr><div class="rr"><span>Customer:</span><span>${esc(s.name)}</span></div>
+    <div class="rr"><span>Phone:</span><span>${esc(s.phone)}</span></div>
+    ${s.address?`<div class="rr"><span>Area:</span><span>${esc(s.address)}</span></div>`:''}
+    <hr>
+    ${s.frameLabel&&!s.frameLabel.startsWith('—')?`<div class="rr"><span>Frame:</span><span>${esc(s.frameLabel)}</span></div><div class="rr"><span></span><span>TZS ${fmt(s.framePrice)}</span></div>`:''}
+    ${s.lensType?`<div class="rr"><span>Lens (${esc(s.lensType)}):</span><span>${s.lensEyes?(s.lensEyes==1?'1 eye':'Pair'):''}</span></div>`:''}
+    ${s.lensRange&&s.lensType!=='Reading Glass'?`<div class="rr"><span>${esc(s.lensRange)}</span><span></span></div>`:''}
+    ${s.lensMat&&s.lensMat!=='Reading Glass'?`<div class="rr"><span>${esc(s.lensMat)}${s.lensPricePerEye&&s.lensEyes>1?` (TZS ${fmt(s.lensPricePerEye)}/eye)`:''}</span><span>TZS ${fmt(s.lensPrice)}</span></div>`:s.lensType==='Reading Glass'?`<div class="rr"><span>Reading Glass${s.lensEyes>1?` (TZS ${fmt(s.lensPricePerEye)}/eye)`:''}</span><span>TZS ${fmt(s.lensPrice)}</span></div>`:''}
+    ${s.accPrice?`<div class="rr"><span>Accessory:</span><span>TZS ${fmt(s.accPrice)}</span></div>`:''}
+    ${s.discount?`<div class="rr"><span>Discount:</span><span>- TZS ${fmt(s.discount)}</span></div>`:''}
+    <hr><div class="rr rt"><span>TOTAL</span><span>TZS ${fmt(s.total)}</span></div>
+    <div class="rr"><span>Paid (${esc(s.method)}):</span><span>TZS ${fmt(s.paid)}</span></div>
+    ${s.paid-s.total>=0?`<div class="rr"><span>Change:</span><span>TZS ${fmt(s.paid-s.total)}</span></div>`:`<div class="rr"><span>Balance:</span><span>TZS ${fmt(s.total-s.paid)}</span></div>`}
+    <hr>
+    ${s.rightEye?`<div class="rr"><span>R Eye:</span><span>${esc(s.rightEye)}</span></div>`:''}
+    ${s.leftEye?`<div class="rr"><span>L Eye:</span><span>${esc(s.leftEye)}</span></div>`:''}
+    ${s.pd?`<div class="rr"><span>PD:</span><span>${esc(s.pd)}</span></div>`:''}
+    ${s.addPower?`<div class="rr"><span>Add:</span><span>${esc(s.addPower)}</span></div>`:''}
+    <hr><div style="text-align:center;font-size:9px;margin-top:5px">Thank you for choosing ADIF Optical Centre!</div>
+  </div>`;
+  om('mo-rcp');
+}
+function prRcp(){if(lastSale)shRcp(lastSale);else tst('No recent sale.','dg');}
+
+async function rSH(){
+  $('sh-bd').innerHTML='<tr><td colspan="9" class="ld"><div class="sp"></div></td></tr>';
+  try{
+    const s=await db.collection('sales').get();
+    allS=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.dateISO||'').localeCompare(a.dateISO||''));
+    const q=v('sh-q').toLowerCase(),mt=v('sh-mt'),fr=v('sh-fr'),to=v('sh-to');
+    const f=allS.filter(x=>(!q||((x.name||'')+(x.phone||'')).toLowerCase().includes(q))&&(!mt||x.method===mt)&&(!fr||x.dateISO>=fr)&&(!to||x.dateISO<=to));
+    const t=f.reduce((a,b)=>a+Number(b.total||0),0);
+    $('sh-ct').textContent=`${f.length} records · TZS ${fmt(t)}`;
+    $('sh-bd').innerHTML=f.length?f.map(x=>`<tr>
+      <td>${fdt(x.dateISO)}</td><td><b>${esc(x.name)}</b></td><td>${esc(x.phone)}</td>
+      <td style="font-size:.74rem">${esc((x.frameLabel||'—').substring(0,28))}</td>
+      <td style="font-size:.74rem">${esc(x.lensType||'—')}</td>
+      <td><b>${fmt(x.total)}</b></td><td>${fmt(x.paid)}</td>
+      <td><span class="bd b-i">${esc(x.method)}</span></td>
+      <td><button class="ab vw" onclick="vSale('${x.id}')">👁</button><button class="ab e" onclick="edSale('${x.id}')">✏</button>${role==='admin'?`<button class="ab d" onclick="dSale('${x.id}')">✕</button>`:''}</td>
+    </tr>`).join(''):`<tr><td colspan="9" style="text-align:center;color:var(--m);padding:18px">No sales found.</td></tr>`;
+  }catch(e){$('sh-bd').innerHTML=`<tr><td colspan="9" style="color:var(--m);padding:14px">Error: ${e.message}</td></tr>`;}
+}
+function vSale(id){const s=allS.find(x=>x.id===id);if(s)shRcp(s);}
+async function dSale(id){if(!confirm('Delete?'))return;try{await db.collection('sales').doc(id).delete();tst('Deleted.','sc');rSH();}catch(e){tst(e.message,'dg');}}
+/* Change 9: edit an existing sale in-place */
+async function edSale(id){
+  const s=allS.find(x=>x.id===id);if(!s){tst('Sale not found.','dg');return;}
+  sp('sales');           /* open the New Sale page (loads dropdowns) */
+  setTimeout(async()=>{
+    edSaleId=id;
+    set('s-reg',s.regNo||'');set('s-nm',s.name||'');set('s-ph',s.phone||'');set('s-ad',s.address||'');
+    set('s-dt',s.dateISO||tdISO());
+    if(s.patientId){$('s-pt').value=s.patientId;}
+    /* frame */
+    if(s.frameId&&[...$('s-fr').options].some(o=>o.value===s.frameId)){$('s-fr').value=s.frameId;}
+    set('s-frp',s.framePrice||'');
+    /* lens */
+    set('s-lt',s.lensType||'');
+    if(s.lensType){uLR();set('s-lr',s.lensRange||'');uLM();set('s-lm',s.lensMat||'');}
+    if($('s-le-cnt'))$('s-le-cnt').value=String(s.lensEyes||2);
+    set('s-lpe',s.lensPricePerEye||(s.lensEyes?Math.round((s.lensPrice||0)/s.lensEyes):s.lensPrice)||'');
+    set('s-lp',s.lensPrice||'');
+    /* accessory */
+    if(s.accLabel&&!s.accLabel.startsWith('—')){const opt=[...$('s-ac').options].find(o=>o.text===s.accLabel);if(opt)$('s-ac').value=opt.value;}
+    set('s-acp',s.accPrice||'');
+    set('s-ds',s.discount||'');
+    set('s-re',s.rightEye||'');set('s-le',s.leftEye||'');set('s-pd',s.pd||'');set('s-ap',s.addPower||'');set('s-nt',s.notes||'');
+    set('s-pd-pd',s.paid||'');
+    if(s.method)$('s-mt').value=s.method;
+    cTo();
+    sEditBanner(true);
+    tst('Editing sale — make changes then Save.','sc');
+  },300);
+}
+function sEditBanner(on){
+  let b=$('s-edit-banner');
+  if(on){
+    if(!b){
+      b=document.createElement('div');b.id='s-edit-banner';b.className='al al-i';
+      b.style.margin='0 0 12px';
+      const main=$('p-sales');const ph=main.querySelector('.ph');ph.insertAdjacentElement('afterend',b);
+    }
+    b.innerHTML='✏ <b>Editing existing sale.</b> Stock quantities are NOT re-deducted. Click <b>Save Sale</b> to update, or <button class="btn btn-sm btn-s" style="margin-left:8px" onclick="cancelEditSale()">Cancel edit</button>';
+    b.style.display='block';
+  }else if(b){b.style.display='none';}
+}
+function cancelEditSale(){edSaleId=null;clSale();sEditBanner(false);tst('Edit cancelled.','sc');}
+
+async function rPx(){
+  const q=v('px-q').toLowerCase();
+  $('px-bd').innerHTML='<tr><td colspan="10" class="ld"><div class="sp"></div></td></tr>';
+  try{
+    const[ss,xs]=await Promise.all([db.collection('sales').get(),db.collection('examinations').get()]);
+    const sales=ss.docs.map(d=>({id:d.id,...d.data()})).filter(s=>s.leftEye||s.rightEye||s.pd);
+    const ex=xs.docs.map(d=>({id:d.id,...d.data()})).filter(e=>e.subRsph||e.subLsph||e.specRx);
+    const all=[...sales.map(s=>({id:s.id,date:s.dateISO,name:s.name,phone:s.phone,r:s.rightEye,l:s.leftEye,pd:s.pd,add:s.addPower,lens:s.lensType,mat:s.lensMat,src:'Sale'})),
+      ...ex.map(e=>({id:e.id,date:e.date,name:e.patientName||'(linked)',phone:'',r:`${e.subRsph||''} / ${e.subRcyl||''} x ${e.subRaxis||''}`,l:`${e.subLsph||''} / ${e.subLcyl||''} x ${e.subLaxis||''}`,pd:e.pd,add:e.subRadd||e.subLadd,lens:e.specRx||'—',mat:'',src:'Exam'}))]
+      .sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+    const f=all.filter(p=>!q||((p.name||'')+(p.phone||'')).toLowerCase().includes(q));
+    $('px-bd').innerHTML=f.length?f.map(p=>`<tr>
+      <td>${fdt(p.date)}</td><td><b>${esc(p.name)}</b></td><td>${esc(p.phone)}</td>
+      <td style="font-size:.74rem">${esc(p.r||'—')}</td><td style="font-size:.74rem">${esc(p.l||'—')}</td>
+      <td>${esc(p.pd||'—')}</td><td>${esc(p.add||'—')}</td>
+      <td style="font-size:.74rem">${esc(p.lens||'—')} ${esc(p.mat||'')}</td>
+      <td><span class="bd ${p.src==='Sale'?'b-i':'b-doc'}">${p.src}</span></td>
+      <td>${p.src==='Sale'?`<button class="ab vw" onclick="vSale('${p.id}')">🖨</button>`:''}</td>
+    </tr>`).join(''):`<tr><td colspan="10" style="text-align:center;color:var(--m);padding:18px">No prescriptions found.</td></tr>`;
+  }catch(e){$('px-bd').innerHTML=`<tr><td colspan="10" style="padding:14px;color:var(--m)">Error: ${e.message}</td></tr>`;}
+}
+
+/* STOCK: LENSES */
+function opLn(l){
+  ed.ln=l?l.id:null;$('ln-mt').textContent=l?'Edit Lens':'Add Lens';
+  if(l){set('lm-rg',l.range);set('lm-qt',l.qty);set('lm-cs',l.cost);set('lm-sl',l.sell);$('lm-tp').value=l.type;$('lm-mt').value=l.material;}
+  else{['lm-rg','lm-qt','lm-cs','lm-sl'].forEach(i=>set(i,''));}
+  om('mo-ln');
+}
+async function rLn(){
+  $('ls-bd').innerHTML='<tr><td colspan="8" class="ld"><div class="sp"></div></td></tr>';
+  try{
+    const s=await db.collection('lenses').get();
+    const ls=s.docs.map(d=>({id:d.id,...d.data()}));
+    const q=v('ls-q').toLowerCase(),tp=v('ls-tp');
+    const f=ls.filter(l=>(!q||((l.type||'')+(l.range||'')+(l.material||'')).toLowerCase().includes(q))&&(!tp||l.type===tp));
+    $('ls-bd').innerHTML=f.length?f.map(l=>`<tr>
+      <td><span class="bd b-g">${esc(l.type)}</span></td><td>${esc(l.range)}</td><td>${esc(l.material)}</td>
+      <td>${l.qty}</td><td>${fmt(l.cost)}</td><td>${fmt(l.sell)}</td><td>${sb(l.qty)}</td>
+      <td><button class="ab e" onclick="eLn('${l.id}')">✏</button><button class="ab d" onclick="dLn('${l.id}')">✕</button></td>
+    </tr>`).join(''):`<tr><td colspan="8" style="text-align:center;color:var(--m);padding:18px">No lens records.</td></tr>`;
+  }catch(e){}
+}
+async function eLn(id){const s=await db.collection('lenses').doc(id).get();opLn({id,...s.data()});}
+async function svLn(){
+  const r=v('lm-rg');if(!r){tst('Range required.','dg');return;}
+  const d={type:$('lm-tp').value,range:r,material:$('lm-mt').value,qty:Number(v('lm-qt'))||0,cost:Number(v('lm-cs'))||0,sell:Number(v('lm-sl'))||0};
+  try{if(ed.ln){await db.collection('lenses').doc(ed.ln).update(d);}else{await db.collection('lenses').add(d);}cm('mo-ln');rLn();tst(ed.ln?'Updated.':'Added.','sc');}catch(e){tst(e.message,'dg');}
+}
+async function dLn(id){if(!confirm('Delete?'))return;try{await db.collection('lenses').doc(id).delete();rLn();tst('Deleted.','sc');}catch(e){tst(e.message,'dg');}}
+
+/* STOCK: FRAMES */
+function opFr(f){
+  ed.fr=f?f.id:null;$('fr-mt').textContent=f?'Edit Frame':'Add Frame';
+  if(f){set('fm-md',f.model);set('fm-qt',f.qty);set('fm-pr',f.price);set('fm-cl',f.color);set('fm-sp',f.supplier);$('fm-mt').value=f.material||'Metal';}
+  else{['fm-md','fm-qt','fm-pr','fm-cl','fm-sp'].forEach(i=>set(i,''));}
+  om('mo-fr');
+}
+async function rFr(){
+  $('fs-bd').innerHTML='<tr><td colspan="7" class="ld"><div class="sp"></div></td></tr>';
+  try{
+    const s=await db.collection('frames').get();
+    const fr=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(a.model||'').localeCompare(b.model||''));
+    const q=v('fs-q').toLowerCase(),mt=v('fs-mt');
+    const f=fr.filter(x=>(!q||((x.model||'')+(x.material||'')+(x.color||'')).toLowerCase().includes(q))&&(!mt||x.material===mt));
+    $('fs-bd').innerHTML=f.length?f.map(x=>`<tr>
+      <td><b>${esc(x.model)}</b>${x.color?`<br><span style="font-size:.7rem;color:var(--m)">${esc(x.color)}</span>`:''}</td>
+      <td><span class="bd b-i">${esc(x.material||'—')}</span></td>
+      <td>${x.qty}</td><td>${fmt(x.price)}</td>
+      <td style="font-size:.74rem;color:var(--m)">${esc(x.supplier||'—')}</td>
+      <td>${sb(x.qty)}</td>
+      <td><button class="ab e" onclick="eFr('${x.id}')">✏</button><button class="ab d" onclick="dFr('${x.id}')">✕</button></td>
+    </tr>`).join(''):`<tr><td colspan="7" style="text-align:center;color:var(--m);padding:18px">No frames found.</td></tr>`;
+  }catch(e){}
+}
+async function eFr(id){const s=await db.collection('frames').doc(id).get();opFr({id,...s.data()});}
+async function svFr(){
+  const md=v('fm-md');if(!md){tst('Model required.','dg');return;}
+  const d={model:md,material:$('fm-mt').value,qty:Number(v('fm-qt'))||0,price:Number(v('fm-pr'))||25000,color:v('fm-cl'),supplier:v('fm-sp')};
+  try{if(ed.fr){await db.collection('frames').doc(ed.fr).update(d);}else{await db.collection('frames').add(d);}cm('mo-fr');rFr();tst(ed.fr?'Updated.':'Added.','sc');}catch(e){tst(e.message,'dg');}
+}
+async function dFr(id){if(!confirm('Delete?'))return;try{await db.collection('frames').doc(id).delete();rFr();tst('Deleted.','sc');}catch(e){tst(e.message,'dg');}}
+
+/* STOCK: ACCESSORIES */
+function opAc(a){
+  ed.ac=a?a.id:null;$('ac-mt').textContent=a?'Edit Accessory':'Add Accessory';
+  if(a){set('am-nm',a.name);set('am-qt',a.qty);set('am-cs',a.cost);set('am-sl',a.sell);$('am-ct').value=a.category||'Hard Case';}
+  else{['am-nm','am-qt','am-cs','am-sl'].forEach(i=>set(i,''));}
+  om('mo-ac');
+}
+async function rAc(){
+  $('as-bd').innerHTML='<tr><td colspan="7" class="ld"><div class="sp"></div></td></tr>';
+  try{
+    const s=await db.collection('accessories').get();
+    const it=s.docs.map(d=>({id:d.id,...d.data()}));
+    $('as-bd').innerHTML=it.length?it.map(a=>`<tr>
+      <td>${esc(a.name)}</td><td><span class="bd b-i">${esc(a.category)}</span></td>
+      <td>${a.qty}</td><td>${fmt(a.cost)}</td><td>${fmt(a.sell)}</td>
+      <td>${sb(a.qty)}</td>
+      <td><button class="ab e" onclick="eAc('${a.id}')">✏</button><button class="ab d" onclick="dAc('${a.id}')">✕</button></td>
+    </tr>`).join(''):`<tr><td colspan="7" style="text-align:center;color:var(--m);padding:18px">No accessories.</td></tr>`;
+  }catch(e){}
+}
+async function eAc(id){const s=await db.collection('accessories').doc(id).get();opAc({id,...s.data()});}
+async function svAc(){
+  const nm=v('am-nm');if(!nm){tst('Name required.','dg');return;}
+  const d={name:nm,category:$('am-ct').value,qty:Number(v('am-qt'))||0,cost:Number(v('am-cs'))||0,sell:Number(v('am-sl'))||0};
+  try{if(ed.ac){await db.collection('accessories').doc(ed.ac).update(d);}else{await db.collection('accessories').add(d);}cm('mo-ac');rAc();tst(ed.ac?'Updated.':'Added.','sc');}catch(e){tst(e.message,'dg');}
+}
+async function dAc(id){if(!confirm('Delete?'))return;try{await db.collection('accessories').doc(id).delete();rAc();tst('Deleted.','sc');}catch(e){tst(e.message,'dg');}}
+
+/* REPAIRS */
+function opRp(r){
+  ed.rp=r?r.id:null;$('rp-mt').textContent=r?'Edit Repair':'New Repair Job';
+  if(r){set('rm-nm',r.name);set('rm-ph',r.phone);set('rm-cs',r.cost);set('rm-dp',r.deposit);set('rm-ds',r.desc);$('rm-tp').value=r.type;$('rm-st').value=r.status||'Pending';}
+  else{['rm-nm','rm-ph','rm-cs','rm-dp','rm-ds'].forEach(i=>set(i,''));$('rm-st').value='Pending';}
+  om('mo-rp');
+}
+async function rRp(){
+  $('rs-bd').innerHTML='<tr><td colspan="9" class="ld"><div class="sp"></div></td></tr>';
+  try{
+    const s=await db.collection('repairs').get();
+    const rs=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.dateISO||'').localeCompare(a.dateISO||''));
+    const q=v('rs-q').toLowerCase(),st=v('rs-st');
+    const f=rs.filter(r=>(!q||((r.name||'')+(r.type||'')+(r.desc||'')).toLowerCase().includes(q))&&(!st||r.status===st));
+    $('rs-bd').innerHTML=f.length?f.map(r=>{
+      const x=(r.status==='Completed'||r.status==='Collected'||r.status==='Glasses Done')?'b-ok':(r.status==='In Progress'||r.status==='On the Process')?'b-w':'b-d';
+      return `<tr>
+        <td>${fdt(r.dateISO)}</td><td><b>${esc(r.name)}</b></td><td>${esc(r.phone)}</td>
+        <td>${esc(r.type)}</td><td style="max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(r.desc||'—')}</td>
+        <td>${fmt(r.cost)}</td><td>${fmt(r.deposit||0)}</td>
+        <td><span class="bd ${x}">${r.status}</span></td>
+        <td>
+          <button class="ab e" onclick="eRp('${r.id}')">✏</button>
+          <select onchange="uRpS('${r.id}',this.value)" style="background:var(--n2);border:1px solid var(--bd);color:var(--o);border-radius:4px;padding:3px 5px;font-size:.68rem;cursor:pointer">
+            <option value="">Update</option><option>Pending</option><option>On the Process</option><option>Glasses Done</option><option>In Progress</option><option>Completed</option><option>Collected</option>
+          </select>
+          ${role==='admin'?`<button class="ab d" onclick="dRp('${r.id}')">✕</button>`:''}
+        </td>
+      </tr>`;
+    }).join(''):`<tr><td colspan="9" style="text-align:center;color:var(--m);padding:18px">No repairs found.</td></tr>`;
+  }catch(e){}
+}
+async function eRp(id){const s=await db.collection('repairs').doc(id).get();opRp({id,...s.data()});}
+async function svRp(){
+  const nm=v('rm-nm'),ph=v('rm-ph');if(!nm||!ph){tst('Name and phone required.','dg');return;}
+  const d={name:nm,phone:ph,type:$('rm-tp').value,status:$('rm-st').value,cost:Number(v('rm-cs'))||0,deposit:Number(v('rm-dp'))||0,desc:v('rm-ds'),dateISO:tdISO(),createdBy:me.uid};
+  try{if(ed.rp){await db.collection('repairs').doc(ed.rp).update(d);}else{await db.collection('repairs').add(d);}cm('mo-rp');rRp();tst(ed.rp?'Updated.':'Added.','sc');}catch(e){tst(e.message,'dg');}
+}
+async function uRpS(id,st){if(!st)return;try{await db.collection('repairs').doc(id).update({status:st});tst('Status: '+st,'sc');rRp();}catch(e){tst(e.message,'dg');}}
+async function dRp(id){if(!confirm('Delete?'))return;try{await db.collection('repairs').doc(id).delete();rRp();tst('Deleted.','sc');}catch(e){tst(e.message,'dg');}}
+
+/* EXPENDITURE */
+function opEp(e){
+  ed.ep=e?e.id:null;$('ep-mt').textContent=e?'Edit Expense':'Add Expense';
+  if(e){set('em-dt',e.date);set('em-am',e.amount);set('em-ds',e.description);set('em-rf',e.ref);$('em-ct').value=e.category||'Miscellaneous';}
+  else{set('em-dt',tdISO());['em-am','em-ds','em-rf'].forEach(i=>set(i,''));}
+  om('mo-ep');
+}
+async function rEp(){
+  try{
+    const s=await db.collection('expenditures').get();
+    const ex=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+    const ct=v('ep-ct'),fr=v('ep-fr'),to=v('ep-to');
+    const f=ex.filter(e=>(!ct||e.category===ct)&&(!fr||e.date>=fr)&&(!to||e.date<=to));
+    const t=f.reduce((a,b)=>a+Number(b.amount||0),0);
+    const bc={};f.forEach(e=>{bc[e.category]=(bc[e.category]||0)+Number(e.amount||0);});
+    const tc=Object.entries(bc).sort((a,b)=>b[1]-a[1])[0];
+    $('ep-st').innerHTML=`
+      <div class="sx"><div class="sl">Total Expenses</div><div class="sv" style="color:#e87060">${fmt(t)}</div><div class="ss">TZS filtered</div></div>
+      <div class="sx"><div class="sl">Entries</div><div class="sv">${f.length}</div><div class="ss">Records</div></div>
+      <div class="sx"><div class="sl">Top Category</div><div class="sv" style="font-size:1.1rem">${tc?esc(tc[0]):'—'}</div><div class="ss">${tc?'TZS '+fmt(tc[1]):''}</div></div>`;
+    $('ep-bd').innerHTML=f.length?f.map(e=>`<tr>
+      <td>${fdt(e.date)}</td><td><span class="bd b-w">${esc(e.category)}</span></td>
+      <td><b>${fmt(e.amount)}</b></td><td>${esc(e.description||'—')}</td><td>${esc(e.ref||'—')}</td>
+      <td style="font-size:.7rem;color:var(--m)">${esc(e.createdByName||'—')}</td>
+      <td><button class="ab e" onclick="eEp('${e.id}')">✏</button>${role==='admin'?`<button class="ab d" onclick="dEp('${e.id}')">✕</button>`:''}</td>
+    </tr>`).join(''):`<tr><td colspan="7" style="text-align:center;color:var(--m);padding:18px">No expenses found.</td></tr>`;
+  }catch(e){}
+}
+async function eEp(id){const s=await db.collection('expenditures').doc(id).get();opEp({id,...s.data()});}
+async function svEp(){
+  const am=v('em-am'),dt=v('em-dt');if(!am||!dt){tst('Date and amount required.','dg');return;}
+  const d={date:dt,category:$('em-ct').value,amount:Number(am),description:v('em-ds'),ref:v('em-rf'),createdBy:me.uid,createdByName:me.name};
+  try{if(ed.ep){await db.collection('expenditures').doc(ed.ep).update(d);}else{await db.collection('expenditures').add(d);}cm('mo-ep');rEp();tst(ed.ep?'Updated.':'Added.','sc');}catch(e){tst(e.message,'dg');}
+}
+async function dEp(id){if(!confirm('Delete?'))return;try{await db.collection('expenditures').doc(id).delete();rEp();tst('Deleted.','sc');}catch(e){tst(e.message,'dg');}}
+
+/* REPORTS / P&L */
+function initRp(){apRp();ldRp();}
+function apRp(){
+  const p=v('rp-ps'),n=new Date();
+  let fr,to=tdISO();
+  if(p==='month'){fr=new Date(n.getFullYear(),n.getMonth(),1).toISOString().split('T')[0];}
+  else if(p==='lastmonth'){fr=new Date(n.getFullYear(),n.getMonth()-1,1).toISOString().split('T')[0];to=new Date(n.getFullYear(),n.getMonth(),0).toISOString().split('T')[0];}
+  else if(p==='quarter'){fr=new Date(n.getFullYear(),n.getMonth()-2,1).toISOString().split('T')[0];}
+  else if(p==='year'){fr=new Date(n.getFullYear(),0,1).toISOString().split('T')[0];}
+  else if(p==='all'){fr='2020-01-01';}
+  else return;
+  set('rp-fr',fr);set('rp-to',to);
+}
+async function ldRp(){
+  const fr=v('rp-fr'),to=v('rp-to');
+  if(!fr||!to){tst('Select date range.','dg');return;}
+  $('rp-out').innerHTML='<div class="ld"><div class="sp"></div><br>Generating report...</div>';
+  try{
+    const[ss,es,rs]=await Promise.all([db.collection('sales').get(),db.collection('expenditures').get(),db.collection('repairs').get()]);
+    const sales=ss.docs.map(d=>({id:d.id,...d.data()})).filter(s=>s.dateISO>=fr&&s.dateISO<=to);
+    const exps=es.docs.map(d=>({id:d.id,...d.data()})).filter(e=>e.date>=fr&&e.date<=to);
+    const reps=rs.docs.map(d=>({id:d.id,...d.data()})).filter(r=>r.dateISO>=fr&&r.dateISO<=to&&['Completed','Collected'].includes(r.status));
+    const fR=sales.reduce((s,x)=>s+Number(x.framePrice||0),0);
+    const lR=sales.reduce((s,x)=>s+Number(x.lensPrice||0),0);
+    const aR=sales.reduce((s,x)=>s+Number(x.accPrice||0),0);
+    const rR=reps.reduce((s,x)=>s+Number(x.cost||0),0);
+    const dT=sales.reduce((s,x)=>s+Number(x.discount||0),0);
+    const tR=sales.reduce((s,x)=>s+Number(x.total||0),0)+rR;
+    const eC={};exps.forEach(e=>{eC[e.category]=(eC[e.category]||0)+Number(e.amount||0);});
+    const tE=exps.reduce((s,e)=>s+Number(e.amount||0),0);
+    const np=tR-tE;const pf=np>=0;
+    const bM={};sales.forEach(s=>{bM[s.method]=(bM[s.method]||0)+Number(s.total||0);});
+    rpData={fr,to,sales,exps,reps,fR,lR,aR,rR,dT,tR,eC,tE,np,pf,bM};
+    $('rp-out').innerHTML=`
+      <div class="g2" style="margin-bottom:14px">
+        <div class="c"><div class="ch"><span class="ct">💰 Revenue Breakdown</span></div><div class="cb">
+          <div class="pls">
+            ${fR?`<div class="plr"><span>Frame Sales</span><span style="color:var(--o)">TZS ${fmt(fR)}</span></div>`:''}
+            ${lR?`<div class="plr"><span>Lens Sales</span><span style="color:var(--o)">TZS ${fmt(lR)}</span></div>`:''}
+            ${aR?`<div class="plr"><span>Accessories</span><span style="color:var(--o)">TZS ${fmt(aR)}</span></div>`:''}
+            ${rR?`<div class="plr"><span>Repair Services</span><span style="color:var(--o)">TZS ${fmt(rR)}</span></div>`:''}
+            ${dT?`<div class="plr" style="color:#e87060"><span>Total Discounts Given</span><span>− TZS ${fmt(dT)}</span></div>`:''}
+          </div>
+          <div class="plt"><div class="plr"><span>TOTAL REVENUE</span><span style="color:var(--g)">TZS ${fmt(tR)}</span></div></div>
+          <hr class="sep">
+          <div style="font-size:.74rem;color:var(--m);margin-bottom:7px;text-transform:uppercase;letter-spacing:.06em">Receipts by Payment Method</div>
+          ${Object.entries(bM).length?Object.entries(bM).map(([m,a])=>`<div class="plr"><span>${esc(m)}</span><span>TZS ${fmt(a)}</span></div>`).join(''):'<div style="color:var(--m);font-size:.78rem">—</div>'}
+        </div></div>
+        <div class="c"><div class="ch"><span class="ct">💸 Expenditure Breakdown</span></div><div class="cb">
+          <div class="pls">
+            ${Object.entries(eC).length?Object.entries(eC).sort((a,b)=>b[1]-a[1]).map(([c,a])=>`<div class="plr"><span>${esc(c)}</span><span style="color:var(--o)">TZS ${fmt(a)}</span></div>`).join(''):'<div style="color:var(--m);font-size:.82rem">No expenses in this period.</div>'}
+          </div>
+          <div class="plt"><div class="plr"><span>TOTAL EXPENSES</span><span style="color:#e87060">TZS ${fmt(tE)}</span></div></div>
+        </div></div>
+      </div>
+      <div class="pln">
+        <div>
+          <div class="lb">Net ${pf?'Profit':'Loss'}</div>
+          <div style="font-size:.74rem;color:var(--m);margin-top:4px">Period: ${fdt(fr)} to ${fdt(to)}</div>
+        </div>
+        <div style="text-align:right">
+          <div class="am" style="color:${pf?'var(--gr)':'#e87060'}">${pf?'':'−'}TZS ${fmt(Math.abs(np))}</div>
+          <div style="font-size:.7rem;color:var(--m)">Total Revenue − Total Expenses</div>
+        </div>
+      </div>
+      <div class="g3" style="margin-bottom:14px">
+        <div class="sx" style="border-color:var(--g)"><div class="sl">Total Transactions</div><div class="sv">${sales.length}</div><div class="ss">Sales</div></div>
+        <div class="sx"><div class="sl">Avg Sale Value</div><div class="sv">${fmt(sales.length?Math.round(tR/(sales.length||1)):0)}</div><div class="ss">TZS</div></div>
+        <div class="sx"><div class="sl">Repairs Completed</div><div class="sv">${reps.length}</div><div class="ss">${fmt(rR)} TZS</div></div>
+      </div>
+      <div class="c"><div class="ch"><span class="ct">📊 Summary Statement</span></div><div class="cb">
+        <table style="font-size:.85rem">
+          <tr><td><b>Period</b></td><td>${fdt(fr)} — ${fdt(to)}</td></tr>
+          <tr><td><b>Total Revenue (Gross)</b></td><td style="color:var(--g)"><b>TZS ${fmt(tR)}</b></td></tr>
+          <tr><td><b>Total Expenses</b></td><td style="color:#e87060">TZS ${fmt(tE)}</td></tr>
+          <tr><td><b>Net Profit / (Loss)</b></td><td style="color:${pf?'var(--gr)':'#e87060'}"><b>${pf?'':'('}TZS ${fmt(Math.abs(np))}${pf?'':')'}</b></td></tr>
+          <tr><td><b>Profit Margin</b></td><td>${tR>0?((np/tR)*100).toFixed(1)+'%':'—'}</td></tr>
+          <tr><td><b>Number of Sales</b></td><td>${sales.length}</td></tr>
+          <tr><td><b>Repairs Completed</b></td><td>${reps.length}</td></tr>
+        </table>
+        <div style="margin-top:12px;text-align:right;color:var(--m);font-size:.7rem">Generated: ${new Date().toLocaleString('en-GB')} by ${esc(me.name)}</div>
+      </div></div>`;
+  }catch(e){$('rp-out').innerHTML=`<div class="al al-w">Error: ${e.message}</div>`;}
+}
+
+/* Change 8: Export report to Excel (.xlsx) and Word (.doc) */
+function exportReportExcel(){
+  if(!rpData){tst('Generate a report first.','dg');return;}
+  if(typeof XLSX==='undefined'){tst('Excel library still loading, try again.','dg');return;}
+  const d=rpData;
+  const wb=XLSX.utils.book_new();
+
+  /* Summary sheet */
+  const sum=[
+    ['ADIF Optical — Financial Report'],
+    ['Period',`${fdt(d.fr)} to ${fdt(d.to)}`],
+    ['Generated',new Date().toLocaleString('en-GB')+' by '+(me?me.name:'')],
+    [],
+    ['REVENUE','TZS'],
+    ['Frame Sales',d.fR],
+    ['Lens Sales',d.lR],
+    ['Accessories',d.aR],
+    ['Repair Services',d.rR],
+    ['Discounts Given',-d.dT],
+    ['TOTAL REVENUE',d.tR],
+    [],
+    ['EXPENSES','TZS'],
+    ...Object.entries(d.eC).sort((a,b)=>b[1]-a[1]).map(([c,a])=>[c,a]),
+    ['TOTAL EXPENSES',d.tE],
+    [],
+    ['NET '+(d.pf?'PROFIT':'LOSS'),d.np],
+    ['Profit Margin %',d.tR>0?Number(((d.np/d.tR)*100).toFixed(1)):0],
+    ['Number of Sales',d.sales.length],
+    ['Repairs Completed',d.reps.length],
+  ];
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(sum),'Summary');
+
+  /* Sales detail sheet */
+  const salesRows=[['Date','Reg No','Customer','Phone','Frame','Lens Type','Material','Eyes','Lens Total','Frame Price','Accessory','Discount','Total','Paid','Method']];
+  d.sales.slice().sort((a,b)=>(a.dateISO||'').localeCompare(b.dateISO||'')).forEach(s=>{
+    salesRows.push([fdt(s.dateISO),s.regNo||'',s.name||'',s.phone||'',(s.frameLabel||'').replace(/^—.*/,''),s.lensType||'',s.lensMat||'',s.lensEyes||'',Number(s.lensPrice||0),Number(s.framePrice||0),(s.accLabel||'').replace(/^—.*/,''),Number(s.discount||0),Number(s.total||0),Number(s.paid||0),s.method||'']);
+  });
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(salesRows),'Sales');
+
+  /* Expenses detail sheet */
+  const expRows=[['Date','Category','Amount','Description','Receipt #','By']];
+  d.exps.slice().sort((a,b)=>(a.date||'').localeCompare(b.date||'')).forEach(e=>{
+    expRows.push([fdt(e.date),e.category||'',Number(e.amount||0),e.description||'',e.ref||'',e.createdByName||'']);
+  });
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(expRows),'Expenses');
+
+  XLSX.writeFile(wb,`ADIF_Report_${d.fr}_to_${d.to}.xlsx`);
+  tst('Excel downloaded.','sc');
+}
+
+function exportReportWord(){
+  if(!rpData){tst('Generate a report first.','dg');return;}
+  const d=rpData;
+  const row=(a,b,bold)=>`<tr><td style="${bold?'font-weight:bold;':''}border:1px solid #ccc;padding:5px">${a}</td><td style="${bold?'font-weight:bold;':''}border:1px solid #ccc;padding:5px;text-align:right">${b}</td></tr>`;
+  const expRows=Object.entries(d.eC).sort((a,b)=>b[1]-a[1]).map(([c,a])=>row(c,'TZS '+fmt(a))).join('');
+  const html=`<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+  <head><meta charset='utf-8'><title>ADIF Report</title></head><body style="font-family:Calibri,Arial,sans-serif">
+  <h1 style="color:#c9a84c">ADIF Optical Centre</h1>
+  <h2>Financial Report</h2>
+  <p><b>Period:</b> ${fdt(d.fr)} to ${fdt(d.to)}<br><b>Generated:</b> ${new Date().toLocaleString('en-GB')} by ${esc(me?me.name:'')}</p>
+  <h3>Revenue</h3>
+  <table style="border-collapse:collapse;width:100%">
+    ${row('Frame Sales','TZS '+fmt(d.fR))}${row('Lens Sales','TZS '+fmt(d.lR))}${row('Accessories','TZS '+fmt(d.aR))}${row('Repair Services','TZS '+fmt(d.rR))}${row('Discounts Given','− TZS '+fmt(d.dT))}${row('TOTAL REVENUE','TZS '+fmt(d.tR),true)}
+  </table>
+  <h3>Expenses</h3>
+  <table style="border-collapse:collapse;width:100%">${expRows||'<tr><td style="padding:5px">No expenses</td></tr>'}${row('TOTAL EXPENSES','TZS '+fmt(d.tE),true)}</table>
+  <h3>Net ${d.pf?'Profit':'Loss'}</h3>
+  <table style="border-collapse:collapse;width:100%">
+    ${row('Net '+(d.pf?'Profit':'Loss'),(d.pf?'':'− ')+'TZS '+fmt(Math.abs(d.np)),true)}
+    ${row('Profit Margin',d.tR>0?((d.np/d.tR)*100).toFixed(1)+'%':'—')}
+    ${row('Number of Sales',d.sales.length)}
+    ${row('Repairs Completed',d.reps.length)}
+  </table>
+  </body></html>`;
+  const blob=new Blob(['\ufeff'+html],{type:'application/msword'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download=`ADIF_Report_${d.fr}_to_${d.to}.doc`;
+  document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
+  tst('Word document downloaded.','sc');
+}
+async function rUs(){
+  $('us-bd').innerHTML='<tr><td colspan="5" class="ld"><div class="sp"></div></td></tr>';
+  try{
+    const s=await db.collection('users').get();
+    const us=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(a.name||'').localeCompare(b.name||''));
+    $('us-bd').innerHTML=us.length?us.map(u=>`<tr>
+      <td><b>${esc(u.name)}</b>${u.id===me.uid?' <span class="bd b-g" style="margin-left:5px">You</span>':''}</td>
+      <td>${esc(u.email)}</td>
+      <td>${rb(u.role)}</td>
+      <td style="font-size:.72rem;color:var(--m)">${u.createdAt?(u.createdAt.toDate?u.createdAt.toDate().toLocaleDateString('en-GB'):new Date(u.createdAt).toLocaleDateString('en-GB')):'—'}</td>
+      <td>${u.id!==me.uid?`<button class="ab e" onclick="opCR('${u.id}','${esc(u.name).replace(/'/g,'&#39;')}','${u.role}')">Change Role</button>`:''}</td>
+    </tr>`).join(''):`<tr><td colspan="5" style="text-align:center;color:var(--m);padding:18px">No users found.</td></tr>`;
+  }catch(e){}
+}
+function opCR(uid,nm,rl){
+  set('ur-id',uid);
+  $('ur-if').textContent='Changing role for: '+nm;
+  $('ur-rl').value=rl;om('mo-ur');
+}
+async function svUR(){
+  const uid=v('ur-id'),rl=$('ur-rl').value;
+  if(!uid)return;
+  try{await db.collection('users').doc(uid).update({role:rl});cm('mo-ur');rUs();tst('Role updated to: '+rl,'sc');}catch(e){tst(e.message,'dg');}
+}
+
+/* PRICE LIST */
+function rPL(){
+  $('px-bd2').innerHTML=PD.map(r=>{
+    if(r.section)return `<tr class="sxr"><td colspan="7">${r.section}</td></tr>`;
+    const c=v=>v?`<td style="color:var(--o)">${fmt(v)}</td>`:`<td style="color:rgba(255,255,255,.1)">—</td>`;
+    return `<tr><td>${r.range}</td>${c(r.a)}${c(r.b)}${c(r.c)}${c(r.d)}${c(r.e)}${c(r.f)}</tr>`;
+  }).join('');
+}
+
+/* INIT — config hardcoded for Firebase Hosting */
+(function init(){
+  const c={
+    apiKey:"AIzaSyDP0eKKK0Wz2b6KxWs6L2W0RhB5x4Hw6qk",
+    authDomain:"adif-optical-49e3e.firebaseapp.com",
+    databaseURL:"https://adif-optical-49e3e-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId:"adif-optical-49e3e",
+    storageBucket:"adif-optical-49e3e.firebasestorage.app",
+    messagingSenderId:"990727009848",
+    appId:"1:990727009848:web:e1087686a0a49a278858cd"
+  };
+  localStorage.setItem('adif_fb',JSON.stringify(c));
+  initFB(c);
+})();
+</script>
+</body>
+</html>
